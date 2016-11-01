@@ -39,4 +39,30 @@ public class QuizEJB {
         Query query = em.createQuery("SELECT q FROM Quiz q");
         return (List<Quiz>) query.getResultList();
     }
+
+    public List<Quiz> getAllFromCategory(SubSubCategory category) {
+        Query query = em.createQuery("SELECT q FROM Quiz q where q.subSubCategory = :category");
+        query.setParameter("category", category);
+        return (List<Quiz>) query.getResultList();
+    }
+
+    public void updateQuizCategory(Quiz quiz, SubSubCategory category) {
+        quiz.setSubSubCategory(category);
+    }
+
+    public void updateQuizQuestion(Quiz quiz, String question) {
+        quiz.setQuestion(question);
+    }
+
+    public void updateQuizAnswer(Quiz quiz, List<String> answerList) {
+        quiz.setAnswers(answerList);
+    }
+
+    public void updateQuizCorrectAnswer(Quiz quiz, int correctAnswer) {
+        quiz.setCorrectAnswer(correctAnswer);
+    }
+
+    public void deleteQuiz(Quiz quiz) {
+        em.remove(quiz);
+    }
 }

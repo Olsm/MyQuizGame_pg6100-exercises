@@ -21,6 +21,7 @@ import java.util.List;
 
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(Arquillian.class)
 public class QuizEJBTest {
@@ -115,6 +116,42 @@ public class QuizEJBTest {
     @Test(expected = EJBException.class)
     public void testCorrectAnswerCannotBeLessThan1() {
         quizEJB.registerQuiz(subSubCategory, "question", answerList, 0);
+    }
+
+    @Test
+    public void testUpdateQuizCategory() {
+        SubSubCategory category = categoryEJB.registerSubSubCategory(subCategory, "subsubcat");
+        quizEJB.updateQuizCategory(quiz, category);
+        assertEquals(category, quizEJB.getQuiz(quiz.getId()).getSubSubCategory());
+    }
+
+    @Test
+    public void testUpdateQuizQuestion() {
+        quizEJB.updateQuizQuestion(quiz, "suchQ");
+        assertEquals("suchQ", quizEJB.getQuiz(quiz.getId()).getQuestion());
+    }
+
+    @Test
+    public void testUpdateQuizAnswer() {
+        ArrayList<String> answerList = new ArrayList<>();
+        answerList.add("A");
+        answerList.add("B");
+        answerList.add("C");
+        answerList.add("D");
+        quizEJB.updateQuizAnswer(quiz, answerList);
+        assertEquals(answerList, quizEJB.getQuiz(quiz.getId()).getAnswers());
+    }
+
+    @Test
+    public void testUpdateQuizCorrectAnswer() {
+        quizEJB.updateQuizCorrectAnswer(quiz, 2);
+        assertEquals("answer2", quizEJB.getQuiz(quiz.getId()).getCorrectAnswer());
+    }
+
+    @Test
+    public void testDeleteQuiz() {
+        quizEJB.deleteQuiz(quiz);
+        assertNull(quizEJB.getQuiz(quiz.getId()));
     }
 
 }
