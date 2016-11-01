@@ -12,6 +12,7 @@
     <modules>
         <module>restApi</module>
         <module>quiz</module>
+        <module>report</module>
     </modules>
 
     <properties>
