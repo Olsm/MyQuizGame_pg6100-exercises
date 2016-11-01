@@ -121,13 +121,13 @@ public class QuizEJBTest {
     @Test
     public void testUpdateQuizCategory() {
         SubSubCategory category = categoryEJB.registerSubSubCategory(subCategory, "subsubcat");
-        quizEJB.updateQuizCategory(quiz, category);
-        assertEquals(category, quizEJB.getQuiz(quiz.getId()).getSubSubCategory());
+        quizEJB.updateQuizCategory(quiz.getId(), category);
+        assertEquals(category.getCategory(), quizEJB.getQuiz(quiz.getId()).getSubSubCategory().getCategory());
     }
 
     @Test
     public void testUpdateQuizQuestion() {
-        quizEJB.updateQuizQuestion(quiz, "suchQ");
+        quizEJB.updateQuizQuestion(quiz.getId(), "suchQ");
         assertEquals("suchQ", quizEJB.getQuiz(quiz.getId()).getQuestion());
     }
 
@@ -138,19 +138,19 @@ public class QuizEJBTest {
         answerList.add("B");
         answerList.add("C");
         answerList.add("D");
-        quizEJB.updateQuizAnswer(quiz, answerList);
+        quizEJB.updateQuizAnswer(quiz.getId(), answerList);
         assertEquals(answerList, quizEJB.getQuiz(quiz.getId()).getAnswers());
     }
 
     @Test
     public void testUpdateQuizCorrectAnswer() {
-        quizEJB.updateQuizCorrectAnswer(quiz, 2);
+        quizEJB.updateQuizCorrectAnswer(quiz.getId(), 2);
         assertEquals("answer2", quizEJB.getQuiz(quiz.getId()).getCorrectAnswer());
     }
 
-    @Test
+    @Test(expected = EJBException.class)
     public void testDeleteQuiz() {
-        quizEJB.deleteQuiz(quiz);
+        quizEJB.deleteQuiz(quiz.getId());
         assertNull(quizEJB.getQuiz(quiz.getId()));
     }
 

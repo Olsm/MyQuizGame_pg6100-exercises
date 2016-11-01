@@ -46,23 +46,23 @@ public class QuizEJB {
         return (List<Quiz>) query.getResultList();
     }
 
-    public void updateQuizCategory(Quiz quiz, SubSubCategory category) {
-        quiz.setSubSubCategory(category);
+    public void updateQuizCategory(Long quizId, SubSubCategory category) {
+        getQuiz(quizId).setSubSubCategory(category);
     }
 
-    public void updateQuizQuestion(Quiz quiz, String question) {
-        quiz.setQuestion(question);
+    public void updateQuizQuestion(Long quizId, String question) {
+        getQuiz(quizId).setQuestion(question);
     }
 
-    public void updateQuizAnswer(Quiz quiz, List<String> answerList) {
-        quiz.setAnswers(answerList);
+    public void updateQuizAnswer(Long quizId, List<String> answerList) {
+        getQuiz(quizId).setAnswers(answerList);
     }
 
-    public void updateQuizCorrectAnswer(Quiz quiz, int correctAnswer) {
-        quiz.setCorrectAnswer(correctAnswer);
+    public void updateQuizCorrectAnswer(Long quizId, int correctAnswer) {
+        getQuiz(quizId).setCorrectAnswer(correctAnswer);
     }
 
-    public void deleteQuiz(Quiz quiz) {
-        em.remove(quiz);
+    public void deleteQuiz(Long quizId) {
+        em.remove(getQuiz(quizId));
     }
 }
