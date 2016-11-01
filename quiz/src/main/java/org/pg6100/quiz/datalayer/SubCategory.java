@@ -24,4 +24,31 @@ public class SubCategory {
         this.category = category;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public RootCategory getRootCategory() {
+        return rootCategory;
+    }
+
+    public void setRootCategory(RootCategory rootCategory) {
+        this.rootCategory = rootCategory;
+    }
+
+    public List<SubSubCategory> getSubSubCategoryList() {
+        return subSubCategoryList;
+    }
+
+    public void setSubSubCategoryList(List<SubSubCategory> subSubCategoryList) {
+        this.subSubCategoryList = subSubCategoryList;
+    }
 }

@@ -3,6 +3,7 @@ package org.pg6100.quiz.businesslayer;
 import org.pg6100.quiz.datalayer.Quiz;
 import org.pg6100.quiz.datalayer.SubSubCategory;
 
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -10,14 +11,14 @@ import javax.persistence.Query;
 import java.util.List;
 
 @Stateless
-public class QuizBean {
+public class QuizEJB {
 
     @PersistenceContext
     protected EntityManager em;
 
-    public QuizBean(){}
+    public QuizEJB(){}
 
-    public Quiz registerQuiz(SubSubCategory category, String question, List<String> answerList, int correctAnswer) {
+    public Quiz registerQuiz(SubSubCategory category, String question, List<String> answerList, int correctAnswer){
         Quiz quiz = new Quiz(category, question, answerList, correctAnswer);
         em.persist(quiz);
         return quiz;

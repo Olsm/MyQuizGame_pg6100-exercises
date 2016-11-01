@@ -10,12 +10,12 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 @Stateless
-public class CategoryBean {
+public class CategoryEJB {
 
     @PersistenceContext
     protected EntityManager em;
 
-    public CategoryBean(){}
+    public CategoryEJB(){}
 
     public RootCategory registerRootCategory(String category) {
         RootCategory rootCategory = new RootCategory(category);

@@ -11,6 +11,7 @@
 
     <modules>
         <module>restApi</module>
+        <module>quiz</module>
     </modules>
 
     <properties>

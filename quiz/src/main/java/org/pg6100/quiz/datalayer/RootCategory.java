@@ -22,4 +22,24 @@ public class RootCategory {
     public RootCategory(String category) {
         this.category = category;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public List<SubCategory> getSubCategoryList() {
+        return subCategoryList;
+    }
+
+    public void setSubCategoryList(List<SubCategory> subCategoryList) {
+        this.subCategoryList = subCategoryList;
+    }
 }
