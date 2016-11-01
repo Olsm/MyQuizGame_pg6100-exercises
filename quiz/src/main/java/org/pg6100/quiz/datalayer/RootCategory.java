@@ -10,9 +10,7 @@ import java.util.List;
 @Entity
 public class RootCategory {
 
-    @Id @GeneratedValue
-    private Long id;
-    @NotNull
+    @Id
     private String category;
     @OneToMany
     private List<SubCategory> subCategoryList;
@@ -21,10 +19,6 @@ public class RootCategory {
 
     public RootCategory(String category) {
         this.category = category;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getCategory() {

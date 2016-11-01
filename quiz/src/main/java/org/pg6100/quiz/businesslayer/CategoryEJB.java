@@ -35,20 +35,20 @@ public class CategoryEJB {
         return subSubCategory;
     }
 
-    public RootCategory getRootCategory(Long id) {
-        Query query = em.createQuery("SELECT c FROM RootCategory c where c.id = :id");
-        query.setParameter("id", id);
+    public RootCategory getRootCategory(String category) {
+        Query query = em.createQuery("SELECT c FROM RootCategory c where c.category = :id");
+        query.setParameter("id", category);
         return (RootCategory) query.getSingleResult();
     }
 
-    public SubCategory getSubCategory(Long id) {
-        Query query = em.createQuery("SELECT c FROM SubCategory c where c.id = :id");
-        query.setParameter("id", id);
+    public SubCategory getSubCategory(String category) {
+        Query query = em.createQuery("SELECT c FROM SubCategory c where c.category = :id");
+        query.setParameter("id", category);
         return (SubCategory) query.getSingleResult();
     }
-    public SubSubCategory getSubSubCategory(Long id) {
-        Query query = em.createQuery("SELECT c FROM SubSubCategory c where c.id = :id");
-        query.setParameter("id", id);
+    public SubSubCategory getSubSubCategory(String category) {
+        Query query = em.createQuery("SELECT c FROM SubSubCategory c where c.category = :id");
+        query.setParameter("id", category);
         return (SubSubCategory) query.getSingleResult();
     }
 

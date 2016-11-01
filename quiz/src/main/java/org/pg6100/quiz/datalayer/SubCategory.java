@@ -8,9 +8,6 @@ import java.util.List;
 public class SubCategory {
 
     @Id
-    @GeneratedValue
-    private Long id;
-    @NotNull
     private String category;
     @ManyToOne
     RootCategory rootCategory;
@@ -22,10 +19,6 @@ public class SubCategory {
     public SubCategory(RootCategory rootCategory, String category) {
         this.rootCategory = rootCategory;
         this.category = category;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getCategory() {

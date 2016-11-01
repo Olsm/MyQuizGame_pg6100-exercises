@@ -8,6 +8,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Stateless
@@ -22,6 +24,10 @@ public class QuizEJB {
         Quiz quiz = new Quiz(category, question, answerList, correctAnswer);
         em.persist(quiz);
         return quiz;
+    }
+
+    public boolean isPresent(Long quizId) {
+        return em.find(Quiz.class, quizId) != null;
     }
 
     public Quiz getQuiz(Long id) {
@@ -64,5 +70,19 @@ public class QuizEJB {
 
     public void deleteQuiz(Long quizId) {
         em.remove(getQuiz(quizId));
+    }
+
+    public boolean update(@NotNull Long quizId,
+                          @NotNull String question,
+                          @NotNull List<String> answerList,
+                          @NotNull int correctAnswer) {
+        Quiz quiz = getQuiz(quizId);
+        if (quiz == null) {
+            return false;
+        }
+        quiz.setQuestion(question);
+        quiz.setAnswers(answerList);
+        quiz.setCorrectAnswer(correctAnswer);
+        return true;
     }
 }
