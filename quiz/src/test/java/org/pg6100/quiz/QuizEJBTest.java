@@ -4,6 +4,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,13 +14,14 @@ import org.pg6100.quiz.datalayer.Quiz;
 import org.pg6100.quiz.datalayer.RootCategory;
 import org.pg6100.quiz.datalayer.SubCategory;
 import org.pg6100.quiz.datalayer.SubSubCategory;
+import org.pg6100.quiz.util.DeleterEJB;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -32,6 +34,7 @@ public class QuizEJBTest {
         return ShrinkWrap.create(JavaArchive.class)
                 .addPackages(true, "org.pg6100.quiz.businesslayer","org.pg6100.quiz.datalayer",
                         "org.apache.commons.codec")
+                .addClass(DeleterEJB.class)
                 .addAsResource("META-INF/persistence.xml");
     }
 
@@ -39,6 +42,8 @@ public class QuizEJBTest {
     private QuizEJB quizEJB;
     @EJB
     private CategoryEJB categoryEJB;
+    @EJB
+    private DeleterEJB deleterEJB;
 
     private Quiz quiz;
     private RootCategory rootCategory;
@@ -46,12 +51,13 @@ public class QuizEJBTest {
     private SubSubCategory subSubCategory;
     private List<String> answerList;
     private int correctAnswer;
+    private int count = 1;
 
     @Before
-    public void setupBefore() {
-        rootCategory = categoryEJB.registerRootCategory("Science");
-        subCategory = categoryEJB.registerSubCategory(rootCategory, "Computer Science");
-        subSubCategory = categoryEJB.registerSubSubCategory(subCategory, "JEE");
+    public void setup() {
+        rootCategory = categoryEJB.registerRootCategory("Science" + count);
+        subCategory = categoryEJB.registerSubCategory(rootCategory, "Computer Science" + count);
+        subSubCategory = categoryEJB.registerSubSubCategory(subCategory, "JEE" + count);
         answerList = new ArrayList<>();
         answerList.add("answer1");
         answerList.add("answer2");
@@ -59,6 +65,15 @@ public class QuizEJBTest {
         answerList.add("answer4");
         correctAnswer = 1;
         quiz = quizEJB.registerQuiz(subSubCategory, "question", answerList, correctAnswer);
+        count++;
+    }
+
+    @After
+    public void tearDown() {
+        deleterEJB.deleteEntities(Quiz.class);
+        deleterEJB.deleteEntities(SubSubCategory.class);
+        deleterEJB.deleteEntities(SubCategory.class);
+        deleterEJB.deleteEntities(RootCategory.class);
     }
 
     @Test
