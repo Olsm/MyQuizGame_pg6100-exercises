@@ -36,7 +36,7 @@ public class ApplicationConfig extends Application {
     beanConfig.setSchemes(new String[]{"http"});
     beanConfig.setHost("localhost:8080");
     beanConfig.setBasePath("/quizrest/api");
-    beanConfig.setResourcePackage("org.pg6100.rest.quizrest");
+    beanConfig.setResourcePackage("org.pg6100.restApi");
 
     //AWFUL NAME: this "set" is the one does actually init Swagger...
     beanConfig.setScan(true);
@@ -46,7 +46,6 @@ public class ApplicationConfig extends Application {
      */
     HashSet<Class<?>> c = new HashSet<>();
     c.add(QuizRestImpl.class);
-    c.add(QuizRestApi.class);
 
     //add further configuration to activate SWAGGER
     c.add(io.swagger.jaxrs.listing.ApiListingResource.class);

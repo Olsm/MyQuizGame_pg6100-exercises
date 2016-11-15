@@ -44,7 +44,7 @@ public class HttpIT extends QuizRestTestBase {
 
     @BeforeClass
     public static void initReasEasy(){
-        base = UriBuilder.fromUri("http://localhost/newsrest/api/news")
+        base = UriBuilder.fromUri("http://localhost/quizrest/api/quiz")
                 .port(8080);
         client = ClientBuilder.newClient();
     }
@@ -136,7 +136,7 @@ public class HttpIT extends QuizRestTestBase {
              501 should really be in the 4xx family
          */
 
-        String http = "FOO /newsrest/api/news HTTP/1.1\n";
+        String http = "FOO /quizrest/api/quiz HTTP/1.1\n";
         http += "Host:localhost:8080\n";
         http += "\n";
 
