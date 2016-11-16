@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiParam;
 import org.pg6100.quiz.businesslayer.CategoryEJB;
 import org.pg6100.quiz.businesslayer.QuizEJB;
 import org.pg6100.quiz.datalayer.RootCategory;
+import org.pg6100.quiz.datalayer.SubCategory;
+import org.pg6100.quiz.datalayer.SubSubCategory;
 import org.pg6100.restApi.dto.CategoryConverter;
 import org.pg6100.restApi.dto.CategoryDTO;
 import org.pg6100.restApi.dto.QuizConverter;
@@ -64,47 +66,97 @@ public class CategoryRestImpl implements CategoryRestApi {
 
     @Override
     public void deleteRootCategory(String category) {
-
+        cEJB.deleteRootCategory(category);
     }
 
     @Override
-    public Long createSubSubCategory(CategoryDTO dto) {
-        return null;
+    public String createSubSubCategory(CategoryDTO dto) {
+        if (dto.rootCategory != null)
+            throw new WebApplicationException("Cannot specify root category when creating subsub category");
+        else if (dto.subSubCategory != null)
+            throw new WebApplicationException("Cannot specify subsub category when creating subsub category");
+        else if (dto.subCategory == null)
+            throw new WebApplicationException("Sub category must be specified when creating subsub category");
+        else if (dto.category == null)
+            throw new WebApplicationException("Category name must be specified when creating subsub category");
+
+        SubSubCategory subSubCategory;
+        try {
+            subSubCategory = cEJB.registerSubSubCategory(dto.subCategory, dto.category);
+        } catch (Exception e) {
+            throw wrapException(e);
+        }
+
+        return subSubCategory.getCategory();
     }
 
     @Override
     public CategoryDTO getSubSubCategoryById(String category) {
-        return null;
+        return CategoryConverter.transform(cEJB.getSubSubCategory(category));
     }
 
     @Override
     public void updateSubSubCategory(String category, CategoryDTO dto) {
+        if (! cEJB.subSubCatExists(category))
+            throw new WebApplicationException("Cannot find category with name: " + category, 404);
+        else if (! cEJB.subCatExists(dto.subCategory.getCategory()))
+            throw new WebApplicationException("Cannot find sub category with name: " + category, 404);
 
+        try {
+            cEJB.updateSubSubCategory(category, dto.category, dto.subCategory.getCategory());
+        } catch (Exception e) {
+            throw wrapException(e);
+        }
     }
 
     @Override
     public void deleteSubSubCategory(String category) {
-
+        cEJB.deleteSubSubCategory(category);
     }
 
     @Override
-    public Long createSubCategory(CategoryDTO dto) {
-        return null;
+    public String createSubCategory(CategoryDTO dto) {
+        if (dto.subCategory != null)
+            throw new WebApplicationException("Cannot specify sub category when creating sub category");
+        else if (dto.subSubCategory != null)
+            throw new WebApplicationException("Cannot specify subsub category when creating sub category");
+        else if (dto.rootCategory == null)
+            throw new WebApplicationException("Root category must be specified when creating sub category");
+        else if (dto.category == null)
+            throw new WebApplicationException("Category name must be specified when creating sub category");
+
+        SubCategory subCategory;
+        try {
+            subCategory = cEJB.registerSubCategory(dto.rootCategory, dto.category);
+        } catch (Exception e) {
+            throw wrapException(e);
+        }
+
+        return subCategory.getCategory();
     }
 
     @Override
     public CategoryDTO getSubCategoryById(String category) {
-        return null;
+        return CategoryConverter.transform(cEJB.getSubCategory(category));
     }
 
     @Override
     public void updateSubCategory(String category, CategoryDTO dto) {
+        if (! cEJB.subCatExists(category))
+            throw new WebApplicationException("Cannot find category with name: " + category, 404);
+        else if (! cEJB.rootCatExists(dto.rootCategory.getCategory()))
+            throw new WebApplicationException("Cannot find root category with name: " + category, 404);
 
+        try {
+            cEJB.updateSubCategory(category, dto.category, dto.rootCategory.getCategory());
+        } catch (Exception e) {
+            throw wrapException(e);
+        }
     }
 
     @Override
     public void deleteSubCategory(String category) {
-
+        cEJB.deleteSubCategory(category);
     }
 
     @Override

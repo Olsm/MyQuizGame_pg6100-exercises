@@ -69,7 +69,7 @@ public interface CategoryRestApi {
     @Path("/subsub categories")
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiResponse(code = 200, message = "The id of the new subsub category")
-    Long createSubSubCategory(
+    String createSubSubCategory(
             @ApiParam("Category name and sub category")
                     CategoryDTO dto);
 
@@ -111,7 +111,7 @@ public interface CategoryRestApi {
     @Path("/subcategories")
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiResponse(code = 200, message = "The id of the new subcategory")
-    Long createSubCategory(
+    String createSubCategory(
             @ApiParam("Category name and root category")
                     CategoryDTO dto);
 

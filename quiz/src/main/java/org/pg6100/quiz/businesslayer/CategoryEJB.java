@@ -70,7 +70,41 @@ public class CategoryEJB {
             if (rootCategory == null) {
                 return false;
             }
-            rootCategory.setCategory(category);
+            rootCategory.setCategory(newCategory);
             return true;
+    }
+
+    public boolean updateSubCategory(@NotNull String category, @NotNull String newCategory, @NotNull String rootCategory) {
+        RootCategory rootCat = getRootCategory(rootCategory);
+        SubCategory subCat = getSubCategory(category);
+        if (rootCat == null || subCat == null) {
+            return false;
+        }
+        subCat.setCategory(newCategory);
+        subCat.setRootCategory(rootCat);
+        return true;
+    }
+
+    public boolean updateSubSubCategory(@NotNull String category, @NotNull String newCategory, @NotNull String subCategory) {
+        SubCategory subCat = getSubCategory(subCategory);
+        SubSubCategory subSubCat = getSubSubCategory(category);
+        if (subCat == null || subSubCat == null) {
+            return false;
+        }
+        subSubCat.setCategory(newCategory);
+        subSubCat.setSubCategory(subCat);
+        return true;
+    }
+
+    public void deleteRootCategory(@NotNull String category) {
+        em.remove(getRootCategory(category));
+    }
+
+    public void deleteSubCategory(@NotNull String category) {
+        em.remove(getSubCategory(category));
+    }
+
+    public void deleteSubSubCategory(@NotNull String category) {
+        em.remove(getSubSubCategory(category));
     }
 }
