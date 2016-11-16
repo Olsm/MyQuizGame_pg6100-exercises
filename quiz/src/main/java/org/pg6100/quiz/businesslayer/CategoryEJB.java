@@ -8,6 +8,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.validation.constraints.NotNull;
+import java.util.Locale;
 
 @Stateless
 public class CategoryEJB {
@@ -52,4 +54,23 @@ public class CategoryEJB {
         return (SubSubCategory) query.getSingleResult();
     }
 
+    public boolean rootCatExists(String category) {
+        return em.find(RootCategory.class, category) != null;
+    }
+    public boolean subCatExists(String category) {
+        return em.find(SubCategory.class, category) != null;
+    }
+    public boolean subSubCatExists(String category) {
+        return em.find(SubSubCategory.class, category) != null;
+    }
+
+
+    public boolean updateRootCategory(@NotNull String category, @NotNull String newCategory) {
+            RootCategory rootCategory = getRootCategory(category);
+            if (rootCategory == null) {
+                return false;
+            }
+            rootCategory.setCategory(category);
+            return true;
+    }
 }
