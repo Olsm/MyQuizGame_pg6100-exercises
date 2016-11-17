@@ -1,9 +1,6 @@
 package org.pg6100.restApi.api;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.*;
 import io.swagger.jaxrs.PATCH;
 import org.pg6100.restApi.dto.CategoryDTO;
 
@@ -158,23 +155,35 @@ public interface CategoryRestApi {
     @Path("/categories/withQuizzes/subsubcategories")
     List<CategoryDTO> getSubSubWithQuizes();
 
-    @ApiOperation("GET all subcategories of the category specified by id")
+    @ApiOperation("GET all subcategories of the category specified by id (name)")
     @GET
-    @Path("/categories/id/{id}/subcategories")
-    List<CategoryDTO> getSubCategoriesByRootCategoryId();
+    @Path("/categories/id/{category}/subcategories")
+    List<CategoryDTO> getSubCategoriesByRootCategory(
+            @ApiParam("The root category name")
+            @PathParam("category")
+                String category);
 
-    @ApiOperation("GET all subcategories with the given parent specified by id")
+    @ApiOperation("GET all subcategories with the given parent specified by id (name)")
     @GET
-    @Path("/subcategories/parent/{id}")
-    List<CategoryDTO> getSubWithGivenParentById();
+    @Path("/subcategories/parent/{category}")
+    List<CategoryDTO> getSubWithGivenParentByCategory(
+            @ApiParam("The sub category name")
+            @PathParam("category")
+                String category);
 
-    @ApiOperation("GET all subsubcategories of the subcategory specified by id")
+    @ApiOperation("GET all subsubcategories of the subcategory specified by id (name)")
     @GET
-    @Path("/subcategories/id/{id}/subsubcategories")
-    List<CategoryDTO> getSubSubBySubCategoryId();
+    @Path("/subcategories/id/{category}/subsubcategories")
+    List<CategoryDTO> getSubSubBySubCategory(
+            @ApiParam ("The sub category name")
+            @PathParam("category")
+                    String category);
 
-    @ApiOperation("GET all subsubcategories with the given subcategory parent specified by id")
+    @ApiOperation("GET all subsubcategories with the given subcategory parent specified by id (name)")
     @GET
-    @Path("/subsubcategories/parent/{id}")
-    List<CategoryDTO> getSubSubWithGivenSubParentById();
+    @Path("/subsubcategories/parent/{category}")
+    List<CategoryDTO> getSubSubWithGivenSubParentByCategory(
+            @ApiParam("The subsub category name")
+            @PathParam("category")
+                    String category);
 }

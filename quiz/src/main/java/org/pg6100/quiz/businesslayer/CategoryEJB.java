@@ -9,6 +9,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @Stateless
@@ -106,5 +108,50 @@ public class CategoryEJB {
 
     public void deleteSubSubCategory(@NotNull String category) {
         em.remove(getSubSubCategory(category));
+    }
+
+    public List<RootCategory> getAllRootCategories() {
+        Query query = em.createQuery("Select c FROM RootCategory c");
+        return (List<RootCategory>) query.getResultList();
+    }
+
+    public List<SubCategory> getAllSubCategories() {
+        Query query = em.createQuery("Select c FROM SubCategory c");
+        return (List<SubCategory>) query.getResultList();
+    }
+
+    public List<SubSubCategory> getAllSubSubCategories() {
+        Query query = em.createQuery("Select c FROM SubSubCategory c");
+        return (List<SubSubCategory>) query.getResultList();
+    }
+
+    public List<RootCategory> getRootCategoriesWithQuizes() {
+        List<RootCategory> categories = getAllRootCategories();
+        List<RootCategory> categoriesWithQuizes = new ArrayList<>();
+
+        for (RootCategory rootCategory : categories) {
+            for (SubCategory subCategory : rootCategory.getSubCategoryList()) {
+                for (SubSubCategory subSubCategory : subCategory.getSubSubCategoryList()) {
+                    if (subSubCategory.getQuizList().size() > 0) {
+                        categoriesWithQuizes.add(rootCategory);
+                    }
+                }
+            }
+        }
+
+        return categoriesWithQuizes;
+    }
+
+    public List<SubSubCategory> getSubSubCategoriesWithQuizes() {
+        List<SubSubCategory> subSubCategories = getAllSubSubCategories();
+        List<SubSubCategory> subSubCategoriesWithQuizes = new ArrayList<>();
+
+        for (SubSubCategory category : subSubCategories) {
+            if (category.getQuizList().size() > 0) {
+                subSubCategoriesWithQuizes.add(category);
+            }
+        }
+
+        return subSubCategoriesWithQuizes;
     }
 }

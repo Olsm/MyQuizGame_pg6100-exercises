@@ -1,7 +1,6 @@
 package org.pg6100.restApi.api;
 
 import com.google.common.base.Throwables;
-import io.swagger.annotations.ApiParam;
 import org.pg6100.quiz.businesslayer.CategoryEJB;
 import org.pg6100.quiz.businesslayer.QuizEJB;
 import org.pg6100.quiz.datalayer.RootCategory;
@@ -9,7 +8,6 @@ import org.pg6100.quiz.datalayer.SubCategory;
 import org.pg6100.quiz.datalayer.SubSubCategory;
 import org.pg6100.restApi.dto.CategoryConverter;
 import org.pg6100.restApi.dto.CategoryDTO;
-import org.pg6100.restApi.dto.QuizConverter;
 
 import javax.ejb.EJB;
 import javax.validation.ConstraintViolationException;
@@ -25,7 +23,7 @@ public class CategoryRestImpl implements CategoryRestApi {
 
     @Override
     public List<CategoryDTO> get() {
-        return QuizConverter.transform(cEJB.getAllRootCategories());
+        return CategoryConverter.transformList(cEJB.getAllRootCategories());
     }
 
     @Override
@@ -97,9 +95,9 @@ public class CategoryRestImpl implements CategoryRestApi {
 
     @Override
     public void updateSubSubCategory(String category, CategoryDTO dto) {
-        if (! cEJB.subSubCatExists(category))
+        if (!cEJB.subSubCatExists(category))
             throw new WebApplicationException("Cannot find category with name: " + category, 404);
-        else if (! cEJB.subCatExists(dto.subCategory.getCategory()))
+        else if (!cEJB.subCatExists(dto.subCategory.getCategory()))
             throw new WebApplicationException("Cannot find sub category with name: " + category, 404);
 
         try {
@@ -161,32 +159,32 @@ public class CategoryRestImpl implements CategoryRestApi {
 
     @Override
     public List<CategoryDTO> getWithQuizes() {
-        return null;
+        return CategoryConverter.transformList(cEJB.getRootCategoriesWithQuizes());
     }
 
     @Override
     public List<CategoryDTO> getSubSubWithQuizes() {
-        return null;
+        return CategoryConverter.transformList(cEJB.getSubSubCategoriesWithQuizes());
     }
 
     @Override
-    public List<CategoryDTO> getSubCategoriesByRootCategoryId() {
-        return null;
+    public List<CategoryDTO> getSubCategoriesByRootCategory(String category) {
+        return CategoryConverter.transformList(cEJB.getRootCategory(category).getSubCategoryList());
     }
 
     @Override
-    public List<CategoryDTO> getSubWithGivenParentById() {
-        return null;
+    public List<CategoryDTO> getSubWithGivenParentByCategory(String category) {
+        return CategoryConverter.transformList(cEJB.getSubCategory(category).getRootCategory().getSubCategoryList());
     }
 
     @Override
-    public List<CategoryDTO> getSubSubBySubCategoryId() {
-        return null;
+    public List<CategoryDTO> getSubSubBySubCategory(String category) {
+        return CategoryConverter.transformList(cEJB.getSubCategory(category).getSubSubCategoryList());
     }
 
     @Override
-    public List<CategoryDTO> getSubSubWithGivenSubParentById() {
-        return null;
+    public List<CategoryDTO> getSubSubWithGivenSubParentByCategory(String category) {
+        return CategoryConverter.transformList(cEJB.getSubSubCategory(category).getSubCategory().getSubSubCategoryList());
     }
 
     //----------------------------------------------------------

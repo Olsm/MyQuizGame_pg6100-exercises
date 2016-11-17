@@ -1,7 +1,6 @@
 package org.pg6100.quiz.datalayer;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity

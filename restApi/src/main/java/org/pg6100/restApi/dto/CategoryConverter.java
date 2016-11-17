@@ -31,19 +31,23 @@ public class CategoryConverter {
         return dto;
     }
 
-    public static List<CategoryDTO> transform(List<Object> categories) {
+    public static List<CategoryDTO> transformList(List<?>categories) {
         Objects.requireNonNull(categories);
         return categories.stream()
                 .map(CategoryConverter::transform)
                 .collect(Collectors.toList());
     }
 
+
+
+
     public static CategoryDTO transform(Object category) {
         return transform((category.getClass().cast(category)));
     }
 
+
     /*
-    public static CategoryDTO transform(Object category) {
+    public static CategoryDTO transform(CategoryInterface category) {
         if (category.getClass() == RootCategory.class)
             return transform((RootCategory) category);
         else if (category.getClass() == SubCategory.class)
