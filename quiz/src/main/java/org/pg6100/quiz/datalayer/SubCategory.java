@@ -7,7 +7,7 @@ import java.util.List;
 public class SubCategory {
 
     @Id
-    private String category;
+    private String name;
     @ManyToOne
     RootCategory rootCategory;
     @OneToMany
@@ -15,17 +15,17 @@ public class SubCategory {
 
     public SubCategory() {}
 
-    public SubCategory(RootCategory rootCategory, String category) {
+    public SubCategory(RootCategory rootCategory, String name) {
         this.rootCategory = rootCategory;
-        this.category = category;
+        this.name = name;
     }
 
-    public String getCategory() {
-        return category;
+    public String getName() {
+        return name;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setName(String category) {
+        this.name = category;
     }
 
     public RootCategory getRootCategory() {
@@ -42,5 +42,9 @@ public class SubCategory {
 
     public void setSubSubCategoryList(List<SubSubCategory> subSubCategoryList) {
         this.subSubCategoryList = subSubCategoryList;
+    }
+
+    public void addSubSubCategory(SubSubCategory category) {
+        getSubSubCategoryList().add(category);
     }
 }

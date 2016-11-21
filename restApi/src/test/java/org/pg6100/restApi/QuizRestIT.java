@@ -1,13 +1,18 @@
 package org.pg6100.restApi;
 
 import io.restassured.http.ContentType;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.pg6100.quiz.businesslayer.CategoryEJB;
 import org.pg6100.quiz.datalayer.RootCategory;
 import org.pg6100.quiz.datalayer.SubCategory;
 import org.pg6100.quiz.datalayer.SubSubCategory;
 import org.pg6100.restApi.dto.QuizDTO;
 
+import javax.ejb.EJB;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,17 +28,24 @@ import static org.hamcrest.core.Is.is;
  */
 public class QuizRestIT extends QuizRestTestBase {
 
-    static RootCategory rootCategory;
-    static SubCategory subCategory;
-    static SubSubCategory category;
+    private RootCategory rootCategory;
+    private SubCategory subCategory;
+    private SubSubCategory category;
 
-    @BeforeClass
-    public static void setupBefore() {
-        rootCategory = new RootCategory("rootCategory");
-        subCategory = new SubCategory(rootCategory, "subCategory");
-        category = new SubSubCategory(subCategory, "category");
+    @EJB
+    private CategoryEJB categoryEJB;
+
+    @Before
+    public void setup() {
+        rootCategory = categoryEJB.registerRootCategory("rootCategory");
+        subCategory = categoryEJB.registerSubCategory(rootCategory, "subCategory");
+        category = categoryEJB.registerSubSubCategory(subCategory, "category");
     }
 
+    @After
+    public void teardown() {
+
+    }
 
     @Test
     public void testCleanDB() {

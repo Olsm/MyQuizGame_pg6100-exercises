@@ -4,6 +4,7 @@ import org.pg6100.quiz.datalayer.RootCategory;
 import org.pg6100.quiz.datalayer.SubCategory;
 import org.pg6100.quiz.datalayer.SubSubCategory;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -12,26 +13,38 @@ public class CategoryConverter {
 
     private CategoryConverter() {}
 
-    public static CategoryDTO transform(RootCategory category) {
+    public static RootCategoryDTO transform(RootCategory category) {
         Objects.requireNonNull(category);
-        CategoryDTO dto = new CategoryDTO();
-        dto.category = String.valueOf(category.getCategory());
+        RootCategoryDTO dto = new RootCategoryDTO();
+        dto.name = String.valueOf(category.getName());
         return dto;
     }
 
-    public static CategoryDTO transform(SubCategory category) {
-        CategoryDTO dto = transform(category.getRootCategory());
+    public static SubCategoryDTO transform(SubCategory category) {
+        SubCategoryDTO dto = new SubCategoryDTO(category.getRootCategory(), category.getName());
         dto.rootCategory = category.getRootCategory();
         return dto;
     }
 
-    public static CategoryDTO transform(SubSubCategory category) {
-        CategoryDTO dto = transform(category.getSubCategory());
+    public static SubSubCategoryDTO transform(SubSubCategory category) {
+        SubSubCategoryDTO dto = new SubSubCategoryDTO(category.getSubCategory(), category.getName());
         dto.subCategory = category.getSubCategory();
         return dto;
     }
 
-    public static List<CategoryDTO> transformList(List<?>categories) {
+    public static List<RootCategoryDTO> transformCategories(List<RootCategory> categories) {
+        return (List<RootCategoryDTO>) transformList((List<?>) categories);
+    }
+
+    public static List<SubCategoryDTO> transformSubCategories(List<SubCategory> categories) {
+        return (List<SubCategoryDTO>) transformList((List<?>) categories);
+    }
+
+    public static List<SubSubCategoryDTO> transformSubSubCategories(List<SubSubCategory> categories) {
+        return (List<SubSubCategoryDTO>) transformList((List<?>) categories);
+    }
+
+    public static List<?> transformList(List<?>categories) {
         Objects.requireNonNull(categories);
         return categories.stream()
                 .map(CategoryConverter::transform)
@@ -39,9 +52,7 @@ public class CategoryConverter {
     }
 
 
-
-
-    public static CategoryDTO transform(Object category) {
+    public static Object transform(Object category) {
         return transform((category.getClass().cast(category)));
     }
 

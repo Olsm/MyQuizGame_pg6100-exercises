@@ -23,6 +23,7 @@ public class QuizEJB {
     public Quiz registerQuiz(SubSubCategory category, String question, List<String> answerList, int correctAnswer){
         Quiz quiz = new Quiz(category, question, answerList, correctAnswer);
         em.persist(quiz);
+        category.addQuiz(quiz);
         return quiz;
     }
 

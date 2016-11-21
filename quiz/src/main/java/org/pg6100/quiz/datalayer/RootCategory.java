@@ -9,22 +9,22 @@ import java.util.List;
 public class RootCategory {
 
     @Id
-    private String category;
+    private String name;
     @OneToMany
     private List<SubCategory> subCategoryList;
 
     public RootCategory() {}
 
-    public RootCategory(String category) {
-        this.category = category;
+    public RootCategory(String name) {
+        this.name = name;
     }
 
-    public String getCategory() {
-        return category;
+    public String getName() {
+        return name;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setName(String category) {
+        this.name = category;
     }
 
     public List<SubCategory> getSubCategoryList() {
@@ -33,5 +33,9 @@ public class RootCategory {
 
     public void setSubCategoryList(List<SubCategory> subCategoryList) {
         this.subCategoryList = subCategoryList;
+    }
+
+    public void addSubCategory(SubCategory category) {
+        getSubCategoryList().add(category);
     }
 }

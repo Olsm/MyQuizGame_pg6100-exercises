@@ -18,7 +18,6 @@ import org.pg6100.quiz.util.DeleterEJB;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,7 +136,7 @@ public class QuizEJBTest {
     public void testUpdateQuizCategory() {
         SubSubCategory category = categoryEJB.registerSubSubCategory(subCategory, "subsubcat");
         quizEJB.updateQuizCategory(quiz.getId(), category);
-        assertEquals(category.getCategory(), quizEJB.getQuiz(quiz.getId()).getSubSubCategory().getCategory());
+        assertEquals(category.getName(), quizEJB.getQuiz(quiz.getId()).getSubSubCategory().getName());
     }
 
     @Test

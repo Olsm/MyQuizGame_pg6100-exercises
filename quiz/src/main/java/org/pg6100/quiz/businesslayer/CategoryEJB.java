@@ -11,7 +11,6 @@ import javax.persistence.Query;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Stateless
 public class CategoryEJB {
@@ -21,93 +20,95 @@ public class CategoryEJB {
 
     public CategoryEJB(){}
 
-    public RootCategory registerRootCategory(String category) {
-        RootCategory rootCategory = new RootCategory(category);
+    public RootCategory registerRootCategory(String name) {
+        RootCategory rootCategory = new RootCategory(name);
         em.persist(rootCategory);
         return rootCategory;
     }
 
-    public SubCategory registerSubCategory(RootCategory rootCategory, String category) {
-        SubCategory subCategory = new SubCategory(rootCategory, category);
+    public SubCategory registerSubCategory(RootCategory rootCategory, String name) {
+        SubCategory subCategory = new SubCategory(rootCategory, name);
         em.persist(subCategory);
+        rootCategory.addSubCategory(subCategory);
         return subCategory;
     }
 
-    public SubSubCategory registerSubSubCategory(SubCategory subCategory, String category) {
-        SubSubCategory subSubCategory = new SubSubCategory(subCategory, category);
+    public SubSubCategory registerSubSubCategory(SubCategory subCategory, String name) {
+        SubSubCategory subSubCategory = new SubSubCategory(subCategory, name);
         em.persist(subSubCategory);
+        subCategory.addSubSubCategory(subSubCategory);
         return subSubCategory;
     }
 
-    public RootCategory getRootCategory(String category) {
-        Query query = em.createQuery("SELECT c FROM RootCategory c where c.category = :id");
-        query.setParameter("id", category);
+    public RootCategory getRootCategory(String name) {
+        Query query = em.createQuery("SELECT c FROM RootCategory c where c.name = :id");
+        query.setParameter("id", name);
         return (RootCategory) query.getSingleResult();
     }
 
-    public SubCategory getSubCategory(String category) {
-        Query query = em.createQuery("SELECT c FROM SubCategory c where c.category = :id");
-        query.setParameter("id", category);
+    public SubCategory getSubCategory(String name) {
+        Query query = em.createQuery("SELECT c FROM SubCategory c where c.name = :id");
+        query.setParameter("id", name);
         return (SubCategory) query.getSingleResult();
     }
-    public SubSubCategory getSubSubCategory(String category) {
-        Query query = em.createQuery("SELECT c FROM SubSubCategory c where c.category = :id");
-        query.setParameter("id", category);
+    public SubSubCategory getSubSubCategory(String name) {
+        Query query = em.createQuery("SELECT c FROM SubSubCategory c where c.name = :id");
+        query.setParameter("id", name);
         return (SubSubCategory) query.getSingleResult();
     }
 
-    public boolean rootCatExists(String category) {
-        return em.find(RootCategory.class, category) != null;
+    public boolean rootCatExists(String name) {
+        return em.find(RootCategory.class, name) != null;
     }
-    public boolean subCatExists(String category) {
-        return em.find(SubCategory.class, category) != null;
+    public boolean subCatExists(String name) {
+        return em.find(SubCategory.class, name) != null;
     }
-    public boolean subSubCatExists(String category) {
-        return em.find(SubSubCategory.class, category) != null;
+    public boolean subSubCatExists(String name) {
+        return em.find(SubSubCategory.class, name) != null;
     }
 
 
-    public boolean updateRootCategory(@NotNull String category, @NotNull String newCategory) {
-            RootCategory rootCategory = getRootCategory(category);
+    public boolean updateRootCategory(@NotNull String name, @NotNull String newCategory) {
+            RootCategory rootCategory = getRootCategory(name);
             if (rootCategory == null) {
                 return false;
             }
-            rootCategory.setCategory(newCategory);
+            rootCategory.setName(newCategory);
             return true;
     }
 
-    public boolean updateSubCategory(@NotNull String category, @NotNull String newCategory, @NotNull String rootCategory) {
+    public boolean updateSubCategory(@NotNull String name, @NotNull String newCategory, @NotNull String rootCategory) {
         RootCategory rootCat = getRootCategory(rootCategory);
-        SubCategory subCat = getSubCategory(category);
+        SubCategory subCat = getSubCategory(name);
         if (rootCat == null || subCat == null) {
             return false;
         }
-        subCat.setCategory(newCategory);
+        subCat.setName(newCategory);
         subCat.setRootCategory(rootCat);
         return true;
     }
 
-    public boolean updateSubSubCategory(@NotNull String category, @NotNull String newCategory, @NotNull String subCategory) {
+    public boolean updateSubSubCategory(@NotNull String name, @NotNull String newCategory, @NotNull String subCategory) {
         SubCategory subCat = getSubCategory(subCategory);
-        SubSubCategory subSubCat = getSubSubCategory(category);
+        SubSubCategory subSubCat = getSubSubCategory(name);
         if (subCat == null || subSubCat == null) {
             return false;
         }
-        subSubCat.setCategory(newCategory);
+        subSubCat.setName(newCategory);
         subSubCat.setSubCategory(subCat);
         return true;
     }
 
-    public void deleteRootCategory(@NotNull String category) {
-        em.remove(getRootCategory(category));
+    public void deleteRootCategory(@NotNull String name) {
+        em.remove(getRootCategory(name));
     }
 
-    public void deleteSubCategory(@NotNull String category) {
-        em.remove(getSubCategory(category));
+    public void deleteSubCategory(@NotNull String name) {
+        em.remove(getSubCategory(name));
     }
 
-    public void deleteSubSubCategory(@NotNull String category) {
-        em.remove(getSubSubCategory(category));
+    public void deleteSubSubCategory(@NotNull String name) {
+        em.remove(getSubSubCategory(name));
     }
 
     public List<RootCategory> getAllRootCategories() {
