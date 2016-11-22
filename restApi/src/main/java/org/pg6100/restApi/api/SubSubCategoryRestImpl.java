@@ -12,10 +12,15 @@ import org.pg6100.restApi.dto.SubCategoryDTO;
 import org.pg6100.restApi.dto.SubSubCategoryDTO;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
 import java.util.List;
 
+@Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED) //avoid creating new transactions
 public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
 
     @EJB
@@ -30,14 +35,14 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
 
     @Override
     public String createSubSubCategory(SubSubCategoryDTO dto) {
-        if (dto.subCategory == null)
+        if (dto.subCategoryName == null)
             throw new WebApplicationException("Sub category must be specified when creating subsub category");
         else if (dto.name == null)
             throw new WebApplicationException("Category name must be specified when creating subsub category");
 
         SubSubCategory subSubCategory;
         try {
-            subSubCategory = cEJB.registerSubSubCategory(dto.subCategory, dto.name);
+            subSubCategory = cEJB.registerSubSubCategory(cEJB.getSubCategory(dto.subCategoryName), dto.name);
         } catch (Exception e) {
             throw wrapException(e);
         }
@@ -54,11 +59,11 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
     public void updateSubSubCategory(String name, SubSubCategoryDTO dto) {
         if (!cEJB.subSubCatExists(name))
             throw new WebApplicationException("Cannot find category with name: " + name, 404);
-        else if (!cEJB.subCatExists(dto.subCategory.getName()))
+        else if (!cEJB.subCatExists(dto.subCategoryName))
             throw new WebApplicationException("Cannot find sub category with name: " + name, 404);
 
         try {
-            cEJB.updateSubSubCategory(name, dto.name, dto.subCategory.getName());
+            cEJB.updateSubSubCategory(name, dto.name, dto.subCategoryName);
         } catch (Exception e) {
             throw wrapException(e);
         }

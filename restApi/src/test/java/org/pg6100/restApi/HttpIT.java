@@ -8,6 +8,9 @@ import org.pg6100.quiz.datalayer.RootCategory;
 import org.pg6100.quiz.datalayer.SubCategory;
 import org.pg6100.quiz.datalayer.SubSubCategory;
 import org.pg6100.restApi.dto.QuizDTO;
+import org.pg6100.restApi.dto.RootCategoryDTO;
+import org.pg6100.restApi.dto.SubCategoryDTO;
+import org.pg6100.restApi.dto.SubSubCategoryDTO;
 import org.pg6100.utils.web.HttpUtil;
 
 import javax.persistence.criteria.Root;
@@ -52,9 +55,9 @@ public class HttpIT extends QuizRestTestBase {
 
     private String createAQuiz(){
 
-        RootCategory rootCategory = new RootCategory("rootCategory");
-        SubCategory subCategory = new SubCategory(rootCategory, "subCategory");
-        SubSubCategory category = new SubSubCategory(subCategory, "category");
+        RootCategoryDTO rootCategoryDTO = new RootCategoryDTO("rootCategory");
+        SubCategoryDTO subCategoryDTO = new SubCategoryDTO(rootCategoryDTO.name, "subCategory");
+        SubSubCategoryDTO categoryDTO = new SubSubCategoryDTO(subCategoryDTO.name, "category");
 
         String question = "Such Question";
         List<String> answerList = new ArrayList<>();
@@ -64,7 +67,7 @@ public class HttpIT extends QuizRestTestBase {
         answerList.add("ans4");
         String correctAnswer = answerList.get(3);
 
-        QuizDTO dto = new QuizDTO(null, category, question, answerList, correctAnswer);
+        QuizDTO dto = new QuizDTO(null, categoryDTO, question, answerList, correctAnswer);
 
         get().then().statusCode(200).body("size()", is(0));
 

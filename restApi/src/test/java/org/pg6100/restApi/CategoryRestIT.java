@@ -3,6 +3,8 @@ package org.pg6100.restApi;
 import io.restassured.http.ContentType;
 import org.junit.Test;
 import org.pg6100.restApi.dto.RootCategoryDTO;
+import org.pg6100.restApi.dto.SubCategoryDTO;
+import org.pg6100.restApi.dto.SubSubCategoryDTO;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.CoreMatchers.not;
@@ -23,37 +25,64 @@ public class CategoryRestIT extends CategoryRestTestBase {
                 .body("size()", is(0));
     }
 
-
     @Test
-    public void testCreateAndGet() {
-
-        RootCategoryDTO dto = createRootCategory("name");
-
+    public void testCreateAndGetRootCategory() {
         get("/categories").then().statusCode(200).body("size()", is(0));
 
-        String id = given().contentType(ContentType.JSON)
-                .body(dto)
-                .post()
+        RootCategoryDTO dto = createRootCategoryDTO("name");
+        get("/categories").then().statusCode(200).body("size()", is(1));
+
+        given().pathParam("id", dto.name)
+                .get("/categories/id/{id}")
                 .then()
                 .statusCode(200)
-                .extract().asString();
-
-        get().then().statusCode(200).body("size()", is(1));
-
-        given().pathParam("name", id)
-                .get("/name/{id}")
-                .then()
-                .statusCode(200)
-                .body("name", is(id));
+                .body("name", is(dto.name));
     }
 
-    private RootCategoryDTO createRootCategory(String name) {
+    @Test
+    public void testCreateAndGetSubCategory() {
+        RootCategoryDTO rootDTO = createRootCategoryDTO("name");
+
+        get("/subcategories").then().statusCode(200).body("size()", is(0));
+
+        SubCategoryDTO dto = createSubCategoryDTO(rootDTO.name, "name");
+        get("/subcategories").then().statusCode(200).body("size()", is(1));
+
+        given().pathParam("id", dto.name)
+                .get("/subcategories/id/{id}")
+                .then()
+                .statusCode(200)
+                .body("name", is(dto.name));
+    }
+
+    @Test
+    public void testCreateAndGetSubSubCategory() {
+
+    }
+
+    private RootCategoryDTO createRootCategoryDTO(String name) {
         RootCategoryDTO dto = new RootCategoryDTO(name);
+        registerCategory(dto, "/categories");
+        return dto;
+    }
+
+    private SubCategoryDTO createSubCategoryDTO(String rootCategoryName, String name) {
+        SubCategoryDTO dto = new SubCategoryDTO(rootCategoryName, name);
+        registerCategory(dto, "/subcategories");
+        return dto;
+    }
+
+    private SubSubCategoryDTO createSubSubCategoryDTO(String subCategoryName, String name) {
+        SubSubCategoryDTO dto = new SubSubCategoryDTO(subCategoryName, name);
+        registerCategory(dto, "/subsubcategories");
+        return dto;
+    }
+
+    public void registerCategory(Object dto, String path) {
         given().contentType(ContentType.JSON)
                 .body(dto)
-                .post("/categories")
+                .post(path)
                 .then()
                 .statusCode(200);
-        return dto;
     }
 }

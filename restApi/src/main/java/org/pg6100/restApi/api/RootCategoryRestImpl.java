@@ -12,10 +12,15 @@ import org.pg6100.restApi.dto.SubCategoryDTO;
 import org.pg6100.restApi.dto.SubSubCategoryDTO;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
 import java.util.List;
 
+@Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED) //avoid creating new transactions
 public class RootCategoryRestImpl implements RootCategoryRestApi {
 
     @EJB

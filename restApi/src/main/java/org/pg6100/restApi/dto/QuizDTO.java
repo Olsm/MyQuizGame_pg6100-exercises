@@ -23,7 +23,7 @@ public class QuizDTO {
     public String id;
 
     @ApiModelProperty("The category of the quiz")
-    public SubSubCategory category;
+    public SubSubCategoryDTO category;
 
     @ApiModelProperty("The question of the quiz")
     public String question;
@@ -36,7 +36,7 @@ public class QuizDTO {
 
     public QuizDTO(){}
 
-    public QuizDTO(String id, SubSubCategory category, String question, List<String> answerList, String correctAnswer) {
+    public QuizDTO(String id, SubSubCategoryDTO category, String question, List<String> answerList, String correctAnswer) {
         this.id = id;
         this.category = category;
         this.question = question;

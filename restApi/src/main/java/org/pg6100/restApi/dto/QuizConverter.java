@@ -22,10 +22,9 @@ public class QuizConverter {
 
     public static QuizDTO transform(Quiz entity){
         Objects.requireNonNull(entity);
-
         QuizDTO dto = new QuizDTO();
         dto.id = String.valueOf(entity.getId());
-        dto.category = entity.getSubSubCategory();
+        dto.category = new SubSubCategoryDTO(entity.getSubCategory().getName(), entity.getSubSubCategory().getName());
         dto.question = entity.getQuestion();
         dto.answerList = entity.getAnswers();
         dto.correctAnswer = entity.getCorrectAnswer();

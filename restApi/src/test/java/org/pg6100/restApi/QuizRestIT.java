@@ -1,19 +1,16 @@
 package org.pg6100.restApi;
 
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.pg6100.quiz.businesslayer.CategoryEJB;
-import org.pg6100.quiz.datalayer.RootCategory;
-import org.pg6100.quiz.datalayer.SubCategory;
 import org.pg6100.quiz.datalayer.SubSubCategory;
 import org.pg6100.restApi.dto.QuizDTO;
+import org.pg6100.restApi.dto.RootCategoryDTO;
+import org.pg6100.restApi.dto.SubCategoryDTO;
+import org.pg6100.restApi.dto.SubSubCategoryDTO;
 
-import javax.ejb.EJB;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,23 +25,31 @@ import static org.hamcrest.core.Is.is;
  */
 public class QuizRestIT extends QuizRestTestBase {
 
-    private RootCategory rootCategory;
-    private SubCategory subCategory;
-    private SubSubCategory category;
-
-    @EJB
-    private CategoryEJB categoryEJB;
+    private RootCategoryDTO rootCategory;
+    private SubCategoryDTO subCategory;
+    private SubSubCategoryDTO category;
 
     @Before
     public void setup() {
-        rootCategory = categoryEJB.registerRootCategory("rootCategory");
-        subCategory = categoryEJB.registerSubCategory(rootCategory, "subCategory");
-        category = categoryEJB.registerSubSubCategory(subCategory, "category");
+        rootCategory = new RootCategoryDTO("rootCategory");
+        subCategory = new SubCategoryDTO(rootCategory.name, "subCategory");
+        category = new SubSubCategoryDTO(subCategory.name, "category");
+        registerCategory(rootCategory, "/categories");
+        registerCategory(subCategory, "/subcategories");
+        registerCategory(category, "/subsubcategories");
     }
 
     @After
     public void teardown() {
 
+    }
+
+    public void registerCategory(Object dto, String path) {
+        given().contentType(ContentType.JSON)
+                .body(dto)
+                .post(path)
+                .then()
+                .statusCode(200);
     }
 
     @Test
@@ -209,7 +214,7 @@ public class QuizRestIT extends QuizRestTestBase {
         createQuiz(null, category, "q6", answerList, answerList.get(1));
     }
 
-    private QuizDTO createQuiz(String id, SubSubCategory category, String question, List<String> answerList, String correctAnswer) {
+    private QuizDTO createQuiz(String id, SubSubCategoryDTO category, String question, List<String> answerList, String correctAnswer) {
         QuizDTO quizDTO = new QuizDTO(id, category, question, answerList, correctAnswer);
         given().contentType(ContentType.JSON)
                 .body(quizDTO)

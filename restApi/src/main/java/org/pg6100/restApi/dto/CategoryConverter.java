@@ -20,50 +20,33 @@ public class CategoryConverter {
     }
 
     public static SubCategoryDTO transform(SubCategory category) {
-        SubCategoryDTO dto = new SubCategoryDTO(category.getRootCategory(), category.getName());
+        SubCategoryDTO dto = new SubCategoryDTO(category.getRootCategory().getName(), category.getName());
         return dto;
     }
 
     public static SubSubCategoryDTO transform(SubSubCategory category) {
-        SubSubCategoryDTO dto = new SubSubCategoryDTO(category.getSubCategory(), category.getName());
+        SubSubCategoryDTO dto = new SubSubCategoryDTO(category.getSubCategory().getName(), category.getName());
         return dto;
     }
 
     public static List<RootCategoryDTO> transformCategories(List<RootCategory> categories) {
-        return (List<RootCategoryDTO>) transformList(categories);
-    }
-
-    public static List<SubCategoryDTO> transformSubCategories(List<SubCategory> categories) {
-        return (List<SubCategoryDTO>) transformList(categories);
-    }
-
-    public static List<SubSubCategoryDTO> transformSubSubCategories(List<SubSubCategory> categories) {
-        return (List<SubSubCategoryDTO>) transformList(categories);
-    }
-
-    public static List<?> transformList(List<?>categories) {
         Objects.requireNonNull(categories);
         return categories.stream()
                 .map(CategoryConverter::transform)
                 .collect(Collectors.toList());
     }
 
-
-    public static Object transform(Object category) {
-        return transform((category.getClass().cast(category)));
+    public static List<SubCategoryDTO> transformSubCategories(List<SubCategory> categories) {
+        Objects.requireNonNull(categories);
+        return categories.stream()
+                .map(CategoryConverter::transform)
+                .collect(Collectors.toList());
     }
 
-
-    /*
-    public static CategoryDTO transform(CategoryInterface category) {
-        if (category.getClass() == RootCategory.class)
-            return transform((RootCategory) category);
-        else if (category.getClass() == SubCategory.class)
-            return transform((SubCategory) category);
-        else if (category.getClass() == SubSubCategory.class)
-            return transform((SubSubCategory) category);
-        else
-            return null;
+    public static List<SubSubCategoryDTO> transformSubSubCategories(List<SubSubCategory> categories) {
+        Objects.requireNonNull(categories);
+        return categories.stream()
+                .map(CategoryConverter::transform)
+                .collect(Collectors.toList());
     }
-    */
 }

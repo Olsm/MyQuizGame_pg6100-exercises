@@ -4,6 +4,7 @@ import com.google.common.base.Throwables;
 import org.pg6100.quiz.businesslayer.CategoryEJB;
 import org.pg6100.quiz.businesslayer.QuizEJB;
 import org.pg6100.quiz.datalayer.Quiz;
+import org.pg6100.quiz.datalayer.SubSubCategory;
 import org.pg6100.restApi.dto.QuizConverter;
 import org.pg6100.restApi.dto.QuizDTO;
 
@@ -27,7 +28,6 @@ public class QuizRestImpl implements QuizRestApi {
     private QuizEJB QEJB;
     @EJB
     private CategoryEJB CEJB;
-
 
     @Override
     public List<QuizDTO> get() {
@@ -56,7 +56,8 @@ public class QuizRestImpl implements QuizRestApi {
 
         Quiz quiz;
         try{
-            quiz = QEJB.registerQuiz(dto.category, dto.question, dto.answerList, dto.answerList.indexOf(dto.correctAnswer));
+            SubSubCategory subCat = CEJB.getSubSubCategory(dto.category.name);
+            quiz = QEJB.registerQuiz(subCat, dto.question, dto.answerList, dto.answerList.indexOf(dto.correctAnswer));
         }catch (Exception e){
             /*
                 note: this work just because NOT_SUPPORTED,

@@ -6,6 +6,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.pg6100.restApi.dto.RootCategoryDTO;
+import org.pg6100.restApi.dto.SubCategoryDTO;
+import org.pg6100.restApi.dto.SubSubCategoryDTO;
 import org.pg6100.utils.web.JBossUtil;
 
 import java.util.Arrays;
@@ -32,7 +34,6 @@ public class CategoryRestTestBase {
     @Before
     @After
     public void clean() {
-
         /*
            Recall, as Wildfly is running as a separated process, changed
            in the database will impact all the tests.
@@ -50,8 +51,28 @@ public class CategoryRestTestBase {
             but the return HTTP response will have no body.
          */
         list.stream().forEach(dto ->
-                given().pathParam("id", dto.name).delete("/id/{id}").then().statusCode(204));
+                given().pathParam("id", dto.name).delete("/categories/id/{id}").then().statusCode(204));
 
-        get().then().statusCode(200).body("size()", is(0));
+        get("/categories").then().statusCode(200).body("size()", is(0));
+
+        List<SubCategoryDTO> list2 = Arrays.asList(given().accept(ContentType.JSON).get("/subcategories")
+                .then()
+                .statusCode(200)
+                .extract().as(SubCategoryDTO[].class));
+
+        list2.stream().forEach(dto ->
+                given().pathParam("id", dto.name).delete("/subcategories/id/{id}").then().statusCode(204));
+
+        get("/subcategories").then().statusCode(200).body("size()", is(0));
+
+        List<SubSubCategoryDTO> list3 = Arrays.asList(given().accept(ContentType.JSON).get("/subsubcategories")
+                .then()
+                .statusCode(200)
+                .extract().as(SubSubCategoryDTO[].class));
+
+        list2.stream().forEach(dto ->
+                given().pathParam("id", dto.name).delete("/subsubcategories/id/{id}").then().statusCode(204));
+
+        get("/subsubcategories").then().statusCode(200).body("size()", is(0));
     }
 }

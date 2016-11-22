@@ -59,7 +59,7 @@ public interface RootCategoryRestApi {
     void deleteRootCategory(
             @ApiParam(ID_PARAM)
             @PathParam("id")
-                    String category);
+                    String name);
 
     @ApiOperation("all categories that have at least one subcategory with at least one subsubcategory with at least one quiz.")
     @GET

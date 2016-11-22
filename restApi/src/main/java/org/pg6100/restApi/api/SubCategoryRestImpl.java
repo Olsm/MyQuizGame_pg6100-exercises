@@ -12,10 +12,15 @@ import org.pg6100.restApi.dto.SubCategoryDTO;
 import org.pg6100.restApi.dto.SubSubCategoryDTO;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
 import java.util.List;
 
+@Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED) //avoid creating new transactions
 public class SubCategoryRestImpl implements SubCategoryRestApi {
 
     @EJB
@@ -31,14 +36,14 @@ public class SubCategoryRestImpl implements SubCategoryRestApi {
 
     @Override
     public String createSubCategory(SubCategoryDTO dto) {
-        if (dto.rootCategory == null)
+        if (dto.rootCategoryName == null)
             throw new WebApplicationException("Root category must be specified when creating sub category");
         else if (dto.name == null)
             throw new WebApplicationException("Category name must be specified when creating sub category");
 
         SubCategory subCategory;
         try {
-            subCategory = cEJB.registerSubCategory(dto.rootCategory, dto.name);
+            subCategory = cEJB.registerSubCategory(cEJB.getRootCategory(dto.rootCategoryName), dto.name);
         } catch (Exception e) {
             throw wrapException(e);
         }
@@ -55,11 +60,11 @@ public class SubCategoryRestImpl implements SubCategoryRestApi {
     public void updateSubCategory(String name, SubCategoryDTO dto) {
         if (! cEJB.subCatExists(name))
             throw new WebApplicationException("Cannot find category with name: " + name, 404);
-        else if (! cEJB.rootCatExists(dto.rootCategory.getName()))
+        else if (! cEJB.rootCatExists(dto.rootCategoryName))
             throw new WebApplicationException("Cannot find root category with name: " + name, 404);
 
         try {
-            cEJB.updateSubCategory(name, dto.name, dto.rootCategory.getName());
+            cEJB.updateSubCategory(name, dto.name, dto.rootCategoryName);
         } catch (Exception e) {
             throw wrapException(e);
         }
