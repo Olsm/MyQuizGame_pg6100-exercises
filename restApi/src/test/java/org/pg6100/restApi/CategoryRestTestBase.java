@@ -34,26 +34,15 @@ public class CategoryRestTestBase {
     @Before
     @After
     public void clean() {
-        /*
-           Recall, as Wildfly is running as a separated process, changed
-           in the database will impact all the tests.
-           Here, we read each resource (GET), and then delete them
-           one by one (DELETE)
-         */
-        List<RootCategoryDTO> list = Arrays.asList(given().accept(ContentType.JSON).get("/categories")
+        List<SubSubCategoryDTO> list3 = Arrays.asList(given().accept(ContentType.JSON).get("/subsubcategories")
                 .then()
                 .statusCode(200)
-                .extract().as(RootCategoryDTO[].class));
+                .extract().as(SubSubCategoryDTO[].class));
 
+        list3.stream().forEach(dto ->
+                given().pathParam("id", dto.name).delete("/subsubcategories/id/{id}").then().statusCode(204));
 
-        /*
-            Code 204: "No Content". The server has successfully processed the request,
-            but the return HTTP response will have no body.
-         */
-        list.stream().forEach(dto ->
-                given().pathParam("id", dto.name).delete("/categories/id/{id}").then().statusCode(204));
-
-        get("/categories").then().statusCode(200).body("size()", is(0));
+        get("/subsubcategories").then().statusCode(200).body("size()", is(0));
 
         List<SubCategoryDTO> list2 = Arrays.asList(given().accept(ContentType.JSON).get("/subcategories")
                 .then()
@@ -65,14 +54,14 @@ public class CategoryRestTestBase {
 
         get("/subcategories").then().statusCode(200).body("size()", is(0));
 
-        List<SubSubCategoryDTO> list3 = Arrays.asList(given().accept(ContentType.JSON).get("/subsubcategories")
+        List<RootCategoryDTO> list1 = Arrays.asList(given().accept(ContentType.JSON).get("/categories")
                 .then()
                 .statusCode(200)
-                .extract().as(SubSubCategoryDTO[].class));
+                .extract().as(RootCategoryDTO[].class));
 
-        list2.stream().forEach(dto ->
-                given().pathParam("id", dto.name).delete("/subsubcategories/id/{id}").then().statusCode(204));
+        list1.stream().forEach(dto ->
+                given().pathParam("id", dto.name).delete("/categories/id/{id}").then().statusCode(204));
 
-        get("/subsubcategories").then().statusCode(200).body("size()", is(0));
+        get("/categories").then().statusCode(200).body("size()", is(0));
     }
 }

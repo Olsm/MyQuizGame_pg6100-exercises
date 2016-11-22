@@ -1,6 +1,7 @@
 package org.pg6100.quiz.datalayer;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ public class RootCategory {
 
     @Id
     private String name;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<SubCategory> subCategoryList;
 
     public RootCategory() {}

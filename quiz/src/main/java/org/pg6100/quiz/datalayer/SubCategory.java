@@ -11,7 +11,7 @@ public class SubCategory {
     private String name;
     @ManyToOne
     RootCategory rootCategory;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<SubSubCategory> subSubCategoryList;
 
     public SubCategory() {}

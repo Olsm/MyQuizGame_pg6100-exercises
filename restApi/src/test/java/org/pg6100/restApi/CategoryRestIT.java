@@ -2,6 +2,7 @@ package org.pg6100.restApi;
 
 import io.restassured.http.ContentType;
 import org.junit.Test;
+import org.pg6100.quiz.datalayer.SubSubCategory;
 import org.pg6100.restApi.dto.RootCategoryDTO;
 import org.pg6100.restApi.dto.SubCategoryDTO;
 import org.pg6100.restApi.dto.SubSubCategoryDTO;
@@ -57,7 +58,18 @@ public class CategoryRestIT extends CategoryRestTestBase {
 
     @Test
     public void testCreateAndGetSubSubCategory() {
+        RootCategoryDTO rootDTO = createRootCategoryDTO("name");
+        SubCategoryDTO subDTO = createSubCategoryDTO(rootDTO.name, "name");
+        get("/subsubcategories").then().statusCode(200).body("size()", is(0));
 
+        SubSubCategoryDTO dto = createSubSubCategoryDTO(subDTO.name, "name");
+        get("/subsubcategories").then().statusCode(200).body("size()", is(1));
+
+        given().pathParam("id", dto.name)
+                .get("/subsubcategories/id/{id}")
+                .then()
+                .statusCode(200)
+                .body("name", is(dto.name));
     }
 
     private RootCategoryDTO createRootCategoryDTO(String name) {
