@@ -1,6 +1,7 @@
 package org.pg6100.quiz.datalayer;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,6 +19,7 @@ public class SubCategory {
     public SubCategory(RootCategory rootCategory, String name) {
         this.rootCategory = rootCategory;
         this.name = name;
+        this.subSubCategoryList = new ArrayList<>();
     }
 
     public String getName() {

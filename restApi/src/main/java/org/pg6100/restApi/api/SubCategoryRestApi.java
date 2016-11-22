@@ -19,6 +19,10 @@ public interface SubCategoryRestApi {
 
     String ID_PARAM = "The numeric id of the category";
 
+    @ApiOperation("Get all the sub categories")
+    @GET
+    List<SubCategoryDTO> get();
+
     @ApiOperation("Create a subcategory")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

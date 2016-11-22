@@ -24,6 +24,11 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
     private QuizEJB qEJB;
 
     @Override
+    public List<SubSubCategoryDTO> get() {
+        return CategoryConverter.transformSubSubCategories(cEJB.getAllSubSubCategories());
+    }
+
+    @Override
     public String createSubSubCategory(SubSubCategoryDTO dto) {
         if (dto.subCategory == null)
             throw new WebApplicationException("Sub category must be specified when creating subsub category");

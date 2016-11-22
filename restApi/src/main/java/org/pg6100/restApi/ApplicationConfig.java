@@ -2,8 +2,7 @@ package org.pg6100.restApi;
 
 
 import io.swagger.jaxrs.config.BeanConfig;
-import org.pg6100.restApi.api.QuizRestApi;
-import org.pg6100.restApi.api.QuizRestImpl;
+import org.pg6100.restApi.api.*;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -46,6 +45,9 @@ public class ApplicationConfig extends Application {
      */
     HashSet<Class<?>> c = new HashSet<>();
     c.add(QuizRestImpl.class);
+    c.add(RootCategoryRestImpl.class);
+    c.add(SubCategoryRestImpl.class);
+    c.add(SubSubCategoryRestImpl.class);
 
     //add further configuration to activate SWAGGER
     c.add(io.swagger.jaxrs.listing.ApiListingResource.class);

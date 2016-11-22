@@ -3,6 +3,7 @@ package org.pg6100.quiz.datalayer;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,6 +18,7 @@ public class RootCategory {
 
     public RootCategory(String name) {
         this.name = name;
+        this.subCategoryList = new ArrayList<>();
     }
 
     public String getName() {
