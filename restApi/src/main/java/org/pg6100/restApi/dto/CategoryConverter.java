@@ -15,33 +15,30 @@ public class CategoryConverter {
 
     public static RootCategoryDTO transform(RootCategory category) {
         Objects.requireNonNull(category);
-        RootCategoryDTO dto = new RootCategoryDTO();
-        dto.name = String.valueOf(category.getName());
+        RootCategoryDTO dto = new RootCategoryDTO(category.getName());
         return dto;
     }
 
     public static SubCategoryDTO transform(SubCategory category) {
         SubCategoryDTO dto = new SubCategoryDTO(category.getRootCategory(), category.getName());
-        dto.rootCategory = category.getRootCategory();
         return dto;
     }
 
     public static SubSubCategoryDTO transform(SubSubCategory category) {
         SubSubCategoryDTO dto = new SubSubCategoryDTO(category.getSubCategory(), category.getName());
-        dto.subCategory = category.getSubCategory();
         return dto;
     }
 
     public static List<RootCategoryDTO> transformCategories(List<RootCategory> categories) {
-        return (List<RootCategoryDTO>) transformList((List<?>) categories);
+        return (List<RootCategoryDTO>) transformList(categories);
     }
 
     public static List<SubCategoryDTO> transformSubCategories(List<SubCategory> categories) {
-        return (List<SubCategoryDTO>) transformList((List<?>) categories);
+        return (List<SubCategoryDTO>) transformList(categories);
     }
 
     public static List<SubSubCategoryDTO> transformSubSubCategories(List<SubSubCategory> categories) {
-        return (List<SubSubCategoryDTO>) transformList((List<?>) categories);
+        return (List<SubSubCategoryDTO>) transformList(categories);
     }
 
     public static List<?> transformList(List<?>categories) {
