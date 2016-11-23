@@ -35,8 +35,8 @@ public class QuizRestImpl implements QuizRestApi {
     }
 
     @Override
-    public List<QuizDTO> getByCategory(String category) {
-        return QuizConverter.transform(QEJB.getAllFromCategory(CEJB.getSubSubCategory(category)));
+    public List<QuizDTO> getByCategory(String id) {
+        return QuizConverter.transform(QEJB.getAllFromCategory(CEJB.getSubSubCategory(id)));
     }
 
     @Override
