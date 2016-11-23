@@ -4,9 +4,9 @@ import org.pg6100.quiz.datalayer.RootCategory;
 import org.pg6100.quiz.datalayer.SubCategory;
 import org.pg6100.quiz.datalayer.SubSubCategory;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CategoryConverter {
@@ -29,24 +29,24 @@ public class CategoryConverter {
         return dto;
     }
 
-    public static List<RootCategoryDTO> transformCategories(List<RootCategory> categories) {
+    public static Set<RootCategoryDTO> transformCategories(Set<RootCategory> categories) {
         Objects.requireNonNull(categories);
         return categories.stream()
                 .map(CategoryConverter::transform)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    public static List<SubCategoryDTO> transformSubCategories(List<SubCategory> categories) {
+    public static Set<SubCategoryDTO> transformSubCategories(Set<SubCategory> categories) {
         Objects.requireNonNull(categories);
         return categories.stream()
                 .map(CategoryConverter::transform)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    public static List<SubSubCategoryDTO> transformSubSubCategories(List<SubSubCategory> categories) {
+    public static Set<SubSubCategoryDTO> transformSubSubCategories(Set<SubSubCategory> categories) {
         Objects.requireNonNull(categories);
         return categories.stream()
                 .map(CategoryConverter::transform)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 }

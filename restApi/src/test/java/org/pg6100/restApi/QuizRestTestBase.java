@@ -36,37 +36,25 @@ public class QuizRestTestBase {
     @Before
     @After
     public void clean() {
-
-        /*
-           Recall, as Wildfly is running as a separated process, changed
-           in the database will impact all the tests.
-           Here, we read each resource (GET), and then delete them
-           one by one (DELETE)
-         */
         List<QuizDTO> list1 = Arrays.asList(given().accept(ContentType.JSON).get("/quiz")
                 .then()
                 .statusCode(200)
                 .extract().as(QuizDTO[].class));
 
-
-        /*
-            Code 204: "No Content". The server has successfully processed the request,
-            but the return HTTP response will have no body.
-         */
         list1.stream().forEach(dto ->
-                given().pathParam("id", dto.id).delete("/id/{id}").then().statusCode(204));
+                given().pathParam("id", dto.id).delete("/quiz/id/{id}").then().statusCode(204));
 
         get("/quiz").then().statusCode(200).body("size()", is(0));
 
-        List<RootCategoryDTO> list2 = Arrays.asList(given().accept(ContentType.JSON).get("/categories")
+        List<SubSubCategoryDTO> list2 = Arrays.asList(given().accept(ContentType.JSON).get("/subsubcategories")
                 .then()
                 .statusCode(200)
-                .extract().as(RootCategoryDTO[].class));
+                .extract().as(SubSubCategoryDTO[].class));
 
         list2.stream().forEach(dto ->
-                given().pathParam("id", dto.name).delete("/categories/id/{id}").then().statusCode(204));
+                given().pathParam("id", dto.name).delete("/subsubcategories/id/{id}").then().statusCode(204));
 
-        get("/categories").then().statusCode(200).body("size()", is(0));
+        get("/subsubcategories").then().statusCode(200).body("size()", is(0));
 
         List<SubCategoryDTO> list3 = Arrays.asList(given().accept(ContentType.JSON).get("/subcategories")
                 .then()
@@ -78,14 +66,14 @@ public class QuizRestTestBase {
 
         get("/subcategories").then().statusCode(200).body("size()", is(0));
 
-        List<SubSubCategoryDTO> list4 = Arrays.asList(given().accept(ContentType.JSON).get("/subsubcategories")
+        List<RootCategoryDTO> list4 = Arrays.asList(given().accept(ContentType.JSON).get("/categories")
                 .then()
                 .statusCode(200)
-                .extract().as(SubSubCategoryDTO[].class));
+                .extract().as(RootCategoryDTO[].class));
 
         list4.stream().forEach(dto ->
-                given().pathParam("id", dto.name).delete("/subsubcategories/id/{id}").then().statusCode(204));
+                given().pathParam("id", dto.name).delete("/categories/id/{id}").then().statusCode(204));
 
-        get("/subsubcategories").then().statusCode(200).body("size()", is(0));
+        get("/categories").then().statusCode(200).body("size()", is(0));
     }
 }

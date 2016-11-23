@@ -18,6 +18,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
 import java.util.List;
+import java.util.Set;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED) //avoid creating new transactions
@@ -29,7 +30,7 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
     private QuizEJB qEJB;
 
     @Override
-    public List<SubSubCategoryDTO> get() {
+    public Set<SubSubCategoryDTO> get() {
         return CategoryConverter.transformSubSubCategories(cEJB.getAllSubSubCategories());
     }
 
@@ -75,17 +76,17 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
     }
 
     @Override
-    public List<SubSubCategoryDTO> getSubSubWithQuizes() {
+    public Set<SubSubCategoryDTO> getSubSubWithQuizes() {
         return CategoryConverter.transformSubSubCategories(cEJB.getSubSubCategoriesWithQuizes());
     }
 
     @Override
-    public List<SubSubCategoryDTO> getSubSubBySubCategory(String name) {
+    public Set<SubSubCategoryDTO> getSubSubBySubCategory(String name) {
         return CategoryConverter.transformSubSubCategories(cEJB.getSubCategory(name).getSubSubCategoryList());
     }
 
     @Override
-    public List<SubSubCategoryDTO> getSubSubWithGivenSubParentByCategory(String name) {
+    public Set<SubSubCategoryDTO> getSubSubWithGivenSubParentByCategory(String name) {
         return CategoryConverter.transformSubSubCategories(cEJB.getSubSubCategory(name).getSubCategory().getSubSubCategoryList());
     }
 

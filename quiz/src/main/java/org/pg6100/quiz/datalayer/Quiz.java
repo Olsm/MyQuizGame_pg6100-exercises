@@ -91,7 +91,7 @@ public class Quiz {
     }
 
     public String getCorrectAnswer() {
-        return getAnswers().get(correctAnswer - 1);
+        return getAnswers().get(correctAnswer);
     }
 
     public void setCorrectAnswer(int correctAnswer) {

@@ -10,7 +10,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Stateless
 public class CategoryEJB {
@@ -111,24 +113,24 @@ public class CategoryEJB {
         em.remove(getSubSubCategory(name));
     }
 
-    public List<RootCategory> getAllRootCategories() {
+    public Set<RootCategory> getAllRootCategories() {
         Query query = em.createQuery("Select c FROM RootCategory c");
-        return (List<RootCategory>) query.getResultList();
+        return new HashSet<>(query.getResultList());
     }
 
-    public List<SubCategory> getAllSubCategories() {
+    public Set<SubCategory> getAllSubCategories() {
         Query query = em.createQuery("Select c FROM SubCategory c");
-        return (List<SubCategory>) query.getResultList();
+        return new HashSet<>(query.getResultList());
     }
 
-    public List<SubSubCategory> getAllSubSubCategories() {
+    public Set<SubSubCategory> getAllSubSubCategories() {
         Query query = em.createQuery("Select c FROM SubSubCategory c");
-        return (List<SubSubCategory>) query.getResultList();
+        return new HashSet<>(query.getResultList());
     }
 
-    public List<RootCategory> getRootCategoriesWithQuizes() {
-        List<RootCategory> categories = getAllRootCategories();
-        List<RootCategory> categoriesWithQuizes = new ArrayList<>();
+    public Set<RootCategory> getRootCategoriesWithQuizes() {
+        Set<RootCategory> categories = getAllRootCategories();
+        Set<RootCategory> categoriesWithQuizes = new HashSet<>();
 
         for (RootCategory rootCategory : categories) {
             for (SubCategory subCategory : rootCategory.getSubCategoryList()) {
@@ -143,9 +145,9 @@ public class CategoryEJB {
         return categoriesWithQuizes;
     }
 
-    public List<SubSubCategory> getSubSubCategoriesWithQuizes() {
-        List<SubSubCategory> subSubCategories = getAllSubSubCategories();
-        List<SubSubCategory> subSubCategoriesWithQuizes = new ArrayList<>();
+    public Set<SubSubCategory> getSubSubCategoriesWithQuizes() {
+        Set<SubSubCategory> subSubCategories = getAllSubSubCategories();
+        Set<SubSubCategory> subSubCategoriesWithQuizes = new HashSet<>();
 
         for (SubSubCategory category : subSubCategories) {
             if (category.getQuizList().size() > 0) {

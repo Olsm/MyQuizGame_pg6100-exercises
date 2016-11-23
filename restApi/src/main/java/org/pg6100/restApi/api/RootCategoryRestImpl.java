@@ -4,12 +4,9 @@ import com.google.common.base.Throwables;
 import org.pg6100.quiz.businesslayer.CategoryEJB;
 import org.pg6100.quiz.businesslayer.QuizEJB;
 import org.pg6100.quiz.datalayer.RootCategory;
-import org.pg6100.quiz.datalayer.SubCategory;
-import org.pg6100.quiz.datalayer.SubSubCategory;
 import org.pg6100.restApi.dto.CategoryConverter;
 import org.pg6100.restApi.dto.RootCategoryDTO;
 import org.pg6100.restApi.dto.SubCategoryDTO;
-import org.pg6100.restApi.dto.SubSubCategoryDTO;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -18,6 +15,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
 import java.util.List;
+import java.util.Set;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED) //avoid creating new transactions
@@ -29,7 +27,7 @@ public class RootCategoryRestImpl implements RootCategoryRestApi {
     private QuizEJB qEJB;
 
     @Override
-    public List<RootCategoryDTO> get() {
+    public Set<RootCategoryDTO> get() {
         return CategoryConverter.transformCategories(cEJB.getAllRootCategories());
     }
 
@@ -71,8 +69,13 @@ public class RootCategoryRestImpl implements RootCategoryRestApi {
     }
 
     @Override
-    public List<RootCategoryDTO> getWithQuizes() {
+    public Set<RootCategoryDTO> getWithQuizes() {
         return CategoryConverter.transformCategories(cEJB.getRootCategoriesWithQuizes());
+    }
+
+    @Override
+    public Set<SubCategoryDTO> getSubCategoriesByRootCategory(String name) {
+        return CategoryConverter.transformSubCategories(cEJB.getRootCategory(name).getSubCategoryList());
     }
 
     //----------------------------------------------------------

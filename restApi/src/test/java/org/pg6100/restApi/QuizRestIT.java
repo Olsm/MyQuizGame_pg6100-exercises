@@ -1,17 +1,18 @@
 package org.pg6100.restApi;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.pg6100.quiz.datalayer.SubSubCategory;
 import org.pg6100.restApi.dto.QuizDTO;
 import org.pg6100.restApi.dto.RootCategoryDTO;
 import org.pg6100.restApi.dto.SubCategoryDTO;
 import org.pg6100.restApi.dto.SubSubCategoryDTO;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static io.restassured.RestAssured.*;
@@ -39,31 +40,13 @@ public class QuizRestIT extends QuizRestTestBase {
         registerCategory(category, "/subsubcategories");
     }
 
-    @After
-    public void teardown() {
-
-    }
-
-    public void registerCategory(Object dto, String path) {
-        given().contentType(ContentType.JSON)
-                .body(dto)
-                .post(path)
-                .then()
-                .statusCode(200);
-    }
-
     @Test
     public void testCleanDB() {
-
-        get().then()
-                .statusCode(200)
-                .body("size()", is(0));
+        testGet().body("size()", is(0));
     }
-
 
     @Test
     public void testCreateAndGet() {
-
         String question = "Such Question";
         List<String> answerList = new ArrayList<>();
         answerList.add("ans1");
@@ -71,44 +54,26 @@ public class QuizRestIT extends QuizRestTestBase {
         answerList.add("ans3");
         answerList.add("ans4");
         String correctAnswer = answerList.get(3);
+        testGet().body("size()", is(0));
+
         QuizDTO dto = createQuiz(null, category, question, answerList, correctAnswer);
-
-        get().then().statusCode(200).body("size()", is(0));
-
-        String id = given().contentType(ContentType.JSON)
-                .body(dto)
-                .post()
-                .then()
-                .statusCode(200)
-                .extract().asString();
-
-        get().then().statusCode(200).body("size()", is(1));
-
-        given().pathParam("id", id)
-                .get("/id/{id}")
-                .then()
-                .statusCode(200)
+        String id = testRegisterQuiz(dto).extract().asString();
+        testGet().body("size()", is(1));
+        testGet("/id/{id}", id)
                 .body("id", is(id))
-                .body("category", is(category))
+                .body("category.name", is(category.name))
+                .body("category.subCategoryName", is(category.subCategoryName))
                 .body("question", is(question))
                 .body("answerList", is(answerList))
-                .body("corrctAnswer", is(correctAnswer));
+                .body("correctAnswer", is(correctAnswer));
     }
 
     @Test
     public void testDelete() {
-
-        String id = given().contentType(ContentType.JSON)
-                .body(createQuiz())
-                .post()
-                .then()
-                .statusCode(200)
-                .extract().asString();
-
-        get().then().body("id", contains(id));
-
+        String id = testRegisterQuiz(createQuiz()).extract().asString();
+        testGet().body("id", contains(id));
+        
         delete("/id/" + id);
-
         get().then().body("id", not(contains(id)));
     }
 
@@ -216,11 +181,6 @@ public class QuizRestIT extends QuizRestTestBase {
 
     private QuizDTO createQuiz(String id, SubSubCategoryDTO category, String question, List<String> answerList, String correctAnswer) {
         QuizDTO quizDTO = new QuizDTO(id, category, question, answerList, correctAnswer);
-        given().contentType(ContentType.JSON)
-                .body(quizDTO)
-                .post()
-                .then()
-                .statusCode(200);
         return quizDTO;
     }
 
@@ -318,5 +278,36 @@ public class QuizRestIT extends QuizRestTestBase {
         get("/id/foo")
                 .then()
                 .statusCode(404);
+    }
+
+    private void registerCategory(Object dto, String path) {
+        given().contentType(ContentType.JSON)
+                .body(dto)
+                .post(path)
+                .then()
+                .statusCode(200);
+    }
+
+    private ValidatableResponse testGet() {
+        return testGet("");
+    }
+
+    private ValidatableResponse testGet(String path) {
+        return get("/quiz" + path).then()
+                .statusCode(200);
+    }
+
+    private ValidatableResponse testGet(String path, String id) {
+        return given().pathParam("id", id)
+                .get("/quiz" + path).then()
+                .statusCode(200);
+    }
+
+    private ValidatableResponse testRegisterQuiz(Object dto) {
+        return given().contentType(ContentType.JSON)
+                .body(dto)
+                .post("/quiz")
+                .then()
+                .statusCode(200);
     }
 }

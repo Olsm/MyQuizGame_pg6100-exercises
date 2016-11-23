@@ -8,6 +8,7 @@ import org.pg6100.restApi.dto.SubSubCategoryDTO;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.Set;
 
 @Api(value = "/categories", description = "Handling of creating and retrieving categories")
 @Path("/categories")
@@ -18,7 +19,7 @@ public interface RootCategoryRestApi {
 
     @ApiOperation("Get all the categories")
     @GET
-    List<RootCategoryDTO> get();
+    Set<RootCategoryDTO> get();
 
     @ApiOperation("Create a category")
     @POST
@@ -43,7 +44,7 @@ public interface RootCategoryRestApi {
     void updateRootCategory(
             @ApiParam(ID_PARAM)
             @PathParam("id")
-                    String category,
+                    String name,
             @ApiParam("The category that will replace the old one")
                     RootCategoryDTO dto);
 
@@ -63,6 +64,14 @@ public interface RootCategoryRestApi {
 
     @ApiOperation("all categories that have at least one subcategory with at least one subsubcategory with at least one quiz.")
     @GET
-    @Path("/categories/withQuizzes")
-    List<RootCategoryDTO> getWithQuizes();
+    @Path("/withQuizzes")
+    Set<RootCategoryDTO> getWithQuizes();
+
+    @ApiOperation("GET all subcategories of the category specified by id (name)")
+    @GET
+    @Path("/id/{id}/subcategories")
+    Set<SubCategoryDTO> getSubCategoriesByRootCategory(
+            @ApiParam("The root category name")
+            @PathParam("id")
+                    String name);
 }

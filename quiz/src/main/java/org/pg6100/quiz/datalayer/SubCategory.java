@@ -1,8 +1,8 @@
 package org.pg6100.quiz.datalayer;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class SubCategory {
@@ -12,14 +12,14 @@ public class SubCategory {
     @ManyToOne
     RootCategory rootCategory;
     @OneToMany(fetch = FetchType.EAGER)
-    private List<SubSubCategory> subSubCategoryList;
+    private Set<SubSubCategory> subSubCategoryList;
 
     public SubCategory() {}
 
     public SubCategory(RootCategory rootCategory, String name) {
         this.rootCategory = rootCategory;
         this.name = name;
-        this.subSubCategoryList = new ArrayList<>();
+        this.subSubCategoryList = new HashSet<>();
     }
 
     public String getName() {
@@ -38,11 +38,11 @@ public class SubCategory {
         this.rootCategory = rootCategory;
     }
 
-    public List<SubSubCategory> getSubSubCategoryList() {
+    public Set<SubSubCategory> getSubSubCategoryList() {
         return subSubCategoryList;
     }
 
-    public void setSubSubCategoryList(List<SubSubCategory> subSubCategoryList) {
+    public void setSubSubCategoryList(Set<SubSubCategory> subSubCategoryList) {
         this.subSubCategoryList = subSubCategoryList;
     }
 

@@ -11,6 +11,7 @@ import org.pg6100.restApi.dto.SubSubCategoryDTO;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.Set;
 
 @Api(value = "/subsubcategories", description = "Handling of creating and retrieving sub sub categories")
 @Path("/subsubcategories")
@@ -21,7 +22,7 @@ public interface SubSubCategoryRestApi {
 
     @ApiOperation("Get all the sub sub categories")
     @GET
-    List<SubSubCategoryDTO> get();
+    Set<SubSubCategoryDTO> get();
 
     @ApiOperation("Create a subsub category")
     @POST
@@ -37,7 +38,7 @@ public interface SubSubCategoryRestApi {
     SubSubCategoryDTO getSubSubCategoryById(
             @ApiParam(ID_PARAM)
             @PathParam("id")
-                    String category);
+                    String name);
 
     @ApiOperation("Update subsub category by id (name)")
     @PUT
@@ -46,7 +47,7 @@ public interface SubSubCategoryRestApi {
     void updateSubSubCategory(
             @ApiParam(ID_PARAM)
             @PathParam("id")
-                    String category,
+                    String name,
             @ApiParam("The subsub category that will replace the old one")
                     SubSubCategoryDTO dto);
 
@@ -62,26 +63,26 @@ public interface SubSubCategoryRestApi {
     void deleteSubSubCategory(
             @ApiParam(ID_PARAM)
             @PathParam("id")
-                    String category);
+                    String name);
 
     @ApiOperation("Get all subsubcategories with at least one quiz")
     @GET
-    @Path("/categories/withQuizzes/subsubcategories")
-    List<SubSubCategoryDTO> getSubSubWithQuizes();
+    @Path("/withQuizzes/subsubcategories")
+    Set<SubSubCategoryDTO> getSubSubWithQuizes();
 
     @ApiOperation("GET all subsubcategories of the subcategory specified by id (name)")
     @GET
-    @Path("/subcategories/id/{category}/subsubcategories")
-    List<SubSubCategoryDTO> getSubSubBySubCategory(
+    @Path("/id/{id}/subsubcategories")
+    Set<SubSubCategoryDTO> getSubSubBySubCategory(
             @ApiParam("The sub category name")
-            @PathParam("category")
-                    String category);
+            @PathParam("id")
+                    String name);
 
     @ApiOperation("GET all subsubcategories with the given subcategory parent specified by id (name)")
     @GET
-    @Path("/parent/{category}")
-    List<SubSubCategoryDTO> getSubSubWithGivenSubParentByCategory(
+    @Path("/parent/{id}")
+    Set<SubSubCategoryDTO> getSubSubWithGivenSubParentByCategory(
             @ApiParam("The subsub category name")
-            @PathParam("category")
-                    String category);
+            @PathParam("id")
+                    String name);
 }

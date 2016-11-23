@@ -3,13 +3,9 @@ package org.pg6100.restApi.api;
 import com.google.common.base.Throwables;
 import org.pg6100.quiz.businesslayer.CategoryEJB;
 import org.pg6100.quiz.businesslayer.QuizEJB;
-import org.pg6100.quiz.datalayer.RootCategory;
 import org.pg6100.quiz.datalayer.SubCategory;
-import org.pg6100.quiz.datalayer.SubSubCategory;
 import org.pg6100.restApi.dto.CategoryConverter;
-import org.pg6100.restApi.dto.RootCategoryDTO;
 import org.pg6100.restApi.dto.SubCategoryDTO;
-import org.pg6100.restApi.dto.SubSubCategoryDTO;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -17,7 +13,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED) //avoid creating new transactions
@@ -29,7 +28,7 @@ public class SubCategoryRestImpl implements SubCategoryRestApi {
     private QuizEJB qEJB;
 
     @Override
-    public List<SubCategoryDTO> get() {
+    public Set<SubCategoryDTO> get() {
         return CategoryConverter.transformSubCategories(cEJB.getAllSubCategories());
     }
 
@@ -76,13 +75,8 @@ public class SubCategoryRestImpl implements SubCategoryRestApi {
     }
 
     @Override
-    public List<SubCategoryDTO> getSubCategoriesByRootCategory(String name) {
+    public Set<SubCategoryDTO> getSubWithGivenParentByCategory(String name) {
         return CategoryConverter.transformSubCategories(cEJB.getRootCategory(name).getSubCategoryList());
-    }
-
-    @Override
-    public List<SubCategoryDTO> getSubWithGivenParentByCategory(String name) {
-        return CategoryConverter.transformSubCategories(cEJB.getSubCategory(name).getRootCategory().getSubCategoryList());
     }
 
     //----------------------------------------------------------

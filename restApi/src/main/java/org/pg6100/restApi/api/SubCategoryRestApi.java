@@ -11,6 +11,7 @@ import org.pg6100.restApi.dto.SubSubCategoryDTO;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.Set;
 
 @Api(value = "/subcategories", description = "Handling of creating and retrieving sub categories")
 @Path("/subcategories")
@@ -21,7 +22,7 @@ public interface SubCategoryRestApi {
 
     @ApiOperation("Get all the sub categories")
     @GET
-    List<SubCategoryDTO> get();
+    Set<SubCategoryDTO> get();
 
     @ApiOperation("Create a subcategory")
     @POST
@@ -64,19 +65,11 @@ public interface SubCategoryRestApi {
             @PathParam("id")
                     String category);
 
-    @ApiOperation("GET all subcategories of the category specified by id (name)")
-    @GET
-    @Path("/categories/id/{category}/subcategories")
-    List<SubCategoryDTO> getSubCategoriesByRootCategory(
-            @ApiParam("The root category name")
-            @PathParam("category")
-                    String category);
-
     @ApiOperation("GET all subcategories with the given parent specified by id (name)")
     @GET
-    @Path("/parent/{category}")
-    List<SubCategoryDTO> getSubWithGivenParentByCategory(
-            @ApiParam("The sub category name")
-            @PathParam("category")
-                    String category);
+    @Path("/parent/{id}")
+    Set<SubCategoryDTO> getSubWithGivenParentByCategory(
+            @ApiParam("The root category name")
+            @PathParam("id")
+                    String name);
 }

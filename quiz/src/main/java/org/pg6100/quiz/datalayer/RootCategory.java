@@ -5,7 +5,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class RootCategory {
@@ -13,13 +14,13 @@ public class RootCategory {
     @Id
     private String name;
     @OneToMany(fetch = FetchType.EAGER)
-    private List<SubCategory> subCategoryList;
+    private Set<SubCategory> subCategoryList;
 
     public RootCategory() {}
 
     public RootCategory(String name) {
         this.name = name;
-        this.subCategoryList = new ArrayList<>();
+        this.subCategoryList = new HashSet<>();
     }
 
     public String getName() {
@@ -30,11 +31,11 @@ public class RootCategory {
         this.name = category;
     }
 
-    public List<SubCategory> getSubCategoryList() {
+    public Set<SubCategory> getSubCategoryList() {
         return subCategoryList;
     }
 
-    public void setSubCategoryList(List<SubCategory> subCategoryList) {
+    public void setSubCategoryList(Set<SubCategory> subCategoryList) {
         this.subCategoryList = subCategoryList;
     }
 
