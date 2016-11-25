@@ -50,9 +50,9 @@ public class QuizRestImpl implements QuizRestApi {
         if(dto.id != null){
             throw new WebApplicationException("Cannot specify id for a newly generated quiz", 400);
         }
-        /* if(dto.creationTime != null){
-            throw new WebApplicationException("Cannot specify creationTime for a newly generated quiz", 400);
-        }*/
+        if (!CEJB.subSubCatExists(dto.category.name)) {
+            throw new WebApplicationException("sub sub category is invalid", 400);
+        }
 
         Quiz quiz;
         try{

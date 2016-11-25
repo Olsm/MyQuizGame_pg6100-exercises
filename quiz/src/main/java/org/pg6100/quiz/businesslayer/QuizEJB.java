@@ -32,9 +32,7 @@ public class QuizEJB {
     }
 
     public Quiz getQuiz(Long id) {
-        Query query = em.createQuery("SELECT q FROM Quiz q where q.id = :id");
-        query.setParameter("id", id);
-        return (Quiz) query.getSingleResult();
+        return em.find(Quiz.class, id);
     }
 
     public int getNumberOfQuizes(){

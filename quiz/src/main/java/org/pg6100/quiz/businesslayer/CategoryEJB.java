@@ -29,6 +29,7 @@ public class CategoryEJB {
     }
 
     public SubCategory registerSubCategory(RootCategory rootCategory, String name) {
+        rootCategory = getRootCategory(rootCategory.getName());
         SubCategory subCategory = new SubCategory(rootCategory, name);
         em.persist(subCategory);
         rootCategory.addSubCategory(subCategory);
@@ -36,6 +37,7 @@ public class CategoryEJB {
     }
 
     public SubSubCategory registerSubSubCategory(SubCategory subCategory, String name) {
+        subCategory = getSubCategory(subCategory.getName());
         SubSubCategory subSubCategory = new SubSubCategory(subCategory, name);
         em.persist(subSubCategory);
         subCategory.addSubSubCategory(subSubCategory);
@@ -43,30 +45,24 @@ public class CategoryEJB {
     }
 
     public RootCategory getRootCategory(String name) {
-        Query query = em.createQuery("SELECT c FROM RootCategory c where c.name = :id");
-        query.setParameter("id", name);
-        return (RootCategory) query.getSingleResult();
+        return em.find(RootCategory.class, name);
     }
 
     public SubCategory getSubCategory(String name) {
-        Query query = em.createQuery("SELECT c FROM SubCategory c where c.name = :id");
-        query.setParameter("id", name);
-        return (SubCategory) query.getSingleResult();
+        return em.find(SubCategory.class, name);
     }
     public SubSubCategory getSubSubCategory(String name) {
-        Query query = em.createQuery("SELECT c FROM SubSubCategory c where c.name = :id");
-        query.setParameter("id", name);
-        return (SubSubCategory) query.getSingleResult();
+        return em.find(SubSubCategory.class, name);
     }
 
     public boolean rootCatExists(String name) {
-        return em.find(RootCategory.class, name) != null;
+        return getRootCategory(name) != null;
     }
     public boolean subCatExists(String name) {
-        return em.find(SubCategory.class, name) != null;
+        return getSubCategory(name) != null;
     }
     public boolean subSubCatExists(String name) {
-        return em.find(SubSubCategory.class, name) != null;
+        return getSubSubCategory(name) != null;
     }
 
 
@@ -106,10 +102,14 @@ public class CategoryEJB {
     }
 
     public void deleteSubCategory(@NotNull String name) {
+        SubCategory subCategory = getSubCategory(name);
+        getRootCategory(subCategory.getRootCategory().getName()).removeSubCategory(subCategory);
         em.remove(getSubCategory(name));
     }
 
     public void deleteSubSubCategory(@NotNull String name) {
+        SubSubCategory subSubCategory = getSubSubCategory(name);
+        getSubCategory(subSubCategory.getSubCategory().getName()).removeSubSubCategory(subSubCategory);
         em.remove(getSubSubCategory(name));
     }
 

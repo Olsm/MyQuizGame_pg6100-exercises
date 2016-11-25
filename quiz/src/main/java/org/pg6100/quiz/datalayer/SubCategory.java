@@ -49,4 +49,8 @@ public class SubCategory {
     public void addSubSubCategory(SubSubCategory category) {
         getSubSubCategoryList().add(category);
     }
+
+    public void removeSubSubCategory(SubSubCategory subSubCategory) {
+        getSubSubCategoryList().remove(subSubCategory);
+    }
 }

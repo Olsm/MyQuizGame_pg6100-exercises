@@ -87,6 +87,8 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
 
     @Override
     public Set<SubSubCategoryDTO> getSubSubWithGivenSubParentByCategory(String name) {
+        if (!cEJB.subSubCatExists(name))
+            throw new WebApplicationException("Cannot find category with name: " + name, 404);
         return CategoryConverter.transformSubSubCategories(cEJB.getSubSubCategory(name).getSubCategory().getSubSubCategoryList());
     }
 

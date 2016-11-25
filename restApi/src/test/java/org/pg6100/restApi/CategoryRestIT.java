@@ -1,6 +1,7 @@
 package org.pg6100.restApi;
 
 import io.restassured.http.ContentType;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.pg6100.restApi.dto.RootCategoryDTO;
 import org.pg6100.restApi.dto.SubCategoryDTO;
@@ -10,8 +11,10 @@ import java.util.Arrays;
 
 import static com.sun.javafx.fxml.expression.Expression.equalTo;
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.core.Is.is;
 
 /*
@@ -67,7 +70,7 @@ public class CategoryRestIT extends CategoryRestTestBase {
         RootCategoryDTO dto1 = createRootCategoryDTO("name1");
         RootCategoryDTO dto2 = createRootCategoryDTO("name2");
         get("/categories").then().statusCode(200).body("size()", is(2))
-            .body("name", is(Arrays.asList("name1", "name2")));
+            .body("name", hasItems("name1", "name2"));
     }
 
     /* TODO
@@ -100,7 +103,7 @@ public class CategoryRestIT extends CategoryRestTestBase {
         SubCategoryDTO dto1 = createSubCategoryDTO(dto.name, "name1");
         SubCategoryDTO dto2 = createSubCategoryDTO(dto.name, "name2");
         get("/subcategories").then().statusCode(200).body("size()", is(2))
-                .body("name", is(Arrays.asList("name1", "name2")));
+                .body("name", hasItems("name1", "name2"));
     }
 
     /* TODO
@@ -129,7 +132,7 @@ public class CategoryRestIT extends CategoryRestTestBase {
                 .get("/categories/id/{id}/subcategories")
                 .then()
                 .statusCode(200)
-                .body("name", is(Arrays.asList("sub1", "sub2")));
+                .body("name", hasItems("sub1", "sub2"));
     }
 
     @Test
@@ -144,7 +147,7 @@ public class CategoryRestIT extends CategoryRestTestBase {
                 .get("/subcategories/parent/{id}")
                 .then()
                 .statusCode(200)
-                .body("name", is(Arrays.asList("sub1", "sub2")));
+                .body("name", hasItems("sub1", "sub2"));
     }
 
 
@@ -159,7 +162,7 @@ public class CategoryRestIT extends CategoryRestTestBase {
     public void testDeleteSubSubCategory() throws Exception {
         RootCategoryDTO rootDTO = createRootCategoryDTO("root");
         SubCategoryDTO subDTO = createSubCategoryDTO(rootDTO.name, "sub");
-        deleteCategory(createSubSubCategoryDTO(subDTO.name, "name"), "name", "/subcategories");
+        deleteCategory(createSubSubCategoryDTO(subDTO.name, "name"), "name", "/subsubcategories");
         get("/subsubcategories").then().statusCode(200).body("size()", is(0));
     }
 
@@ -182,7 +185,7 @@ public class CategoryRestIT extends CategoryRestTestBase {
         createSubSubCategoryDTO("sub", "subsub2");
 
         given().pathParam("id", "sub")
-                .get("/subcategories/id/{id}/subsubcategories")
+                .get("/subsubcategories/id/{id}/subsubcategories")
                 .then()
                 .statusCode(200)
                 .body("name", is(Arrays.asList("subsub1", "subsub2")));
@@ -195,11 +198,11 @@ public class CategoryRestIT extends CategoryRestTestBase {
         createSubSubCategoryDTO("sub", "subsub1");
         createSubSubCategoryDTO("sub", "subsub2");
 
-        given().pathParam("id", "sub")
+        given().pathParam("id", "subsub1")
                 .get("/subsubcategories/parent/{id}")
                 .then()
                 .statusCode(200)
-                .body("name", is(Arrays.asList("subsub1", "subsub2")));
+                .body("name", hasItems("subsub1", "subsub2"));
     }
 
 

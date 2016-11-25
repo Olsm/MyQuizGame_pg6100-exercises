@@ -185,7 +185,8 @@ public class QuizRestIT extends QuizRestTestBase {
     @Test
     public void testInvalidCategory() {
         QuizDTO quizDTO = createQuizDTO();
-        testRegisterQuiz(createQuizDTO(null, null, quizDTO.question, new ArrayList<>(), "test")).statusCode(400);
+        quizDTO.category = null;
+        testRegisterQuiz(quizDTO, 400);
     }
 
     @Test
@@ -255,11 +256,15 @@ public class QuizRestIT extends QuizRestTestBase {
     }
 
     private ValidatableResponse testRegisterQuiz(Object dto) {
+        return  testRegisterQuiz(dto, 200);
+    }
+
+    private ValidatableResponse testRegisterQuiz(Object dto, int statusCode) {
         return given().contentType(ContentType.JSON)
                 .body(dto)
                 .post("/quiz")
                 .then()
-                .statusCode(200);
+                .statusCode(statusCode);
     }
 
     private ValidatableResponse testUpdateQuiz(Object dto, String id) {

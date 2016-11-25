@@ -42,4 +42,8 @@ public class RootCategory {
     public void addSubCategory(SubCategory category) {
         getSubCategoryList().add(category);
     }
+
+    public void removeSubCategory(SubCategory category) {
+        getSubCategoryList().remove(category);
+    }
 }
