@@ -188,7 +188,7 @@ public class CategoryRestIT extends CategoryRestTestBase {
                 .get("/subsubcategories/id/{id}/subsubcategories")
                 .then()
                 .statusCode(200)
-                .body("name", is(Arrays.asList("subsub1", "subsub2")));
+                .body("name", hasItems("subsub1", "subsub2"));
     }
 
     @Test

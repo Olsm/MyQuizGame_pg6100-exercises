@@ -36,6 +36,8 @@ public class QuizRestImpl implements QuizRestApi {
 
     @Override
     public List<QuizDTO> getByCategory(String id) {
+        if (! CEJB.subSubCatExists(id))
+            throw new WebApplicationException("Cannot find category with name: " + id, 400);
         return QuizConverter.transform(QEJB.getAllFromCategory(CEJB.getSubSubCategory(id)));
     }
 
@@ -77,6 +79,9 @@ public class QuizRestImpl implements QuizRestApi {
 
     @Override
     public void update(Long pathId, QuizDTO dto) {
+        if (dto.id == null || dto.question == null || dto.category == null || dto.answerList == null || dto.correctAnswer == null)
+            throw new WebApplicationException("All parameters required, they cannot be null", 400);
+
         long id;
         try{
             id = Long.parseLong(dto.id);
@@ -84,14 +89,12 @@ public class QuizRestImpl implements QuizRestApi {
             throw new WebApplicationException("Invalid id: "+dto.id, 400);
         }
 
-        if(id != pathId){
-            // in this case, 409 (Conflict) sounds more appropriate than the generic 400
+        // in this case, 409 (Conflict) sounds more appropriate than the generic 400
+        if(id != pathId)
             throw new WebApplicationException("Not allowed to change the id of the resource", 409);
-        }
 
-        if(! QEJB.isPresent(id)){
+        if(! QEJB.isPresent(id))
             throw new WebApplicationException("Not allowed to create a quiz with PUT, and cannot find quiz with id: "+id, 404);
-        }
 
         try {
             QEJB.update(id, dto.question, dto.answerList, dto.answerList.indexOf(dto.correctAnswer));

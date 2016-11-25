@@ -106,14 +106,16 @@ public class QuizRestIT extends QuizRestTestBase {
 
     @Test
     public void testMissingForUpdate() {
-        testUpdateQuiz(createQuizDTO(), "-333", 404);
+        QuizDTO quizDTO = createQuizDTO();
+        quizDTO.id = "-333";
+        testUpdateQuiz(quizDTO, "-333", 404);
     }
 
     @Test
     public void testUpdateNonMatchingId() {
         QuizDTO quizDTO = createQuizDTO();
-        testUpdateQuiz(quizDTO, "222");
-        testUpdateQuiz(createQuizDTO("222", quizDTO.category, quizDTO.question, quizDTO.answerList, quizDTO.correctAnswer), quizDTO.id, 409);
+        quizDTO.id = "1";
+        testUpdateQuiz(quizDTO, "-333", 409);
     }
 
 
@@ -128,8 +130,8 @@ public class QuizRestIT extends QuizRestTestBase {
     private void createSomeQuizes() {
         RootCategoryDTO rootCategory2 = new RootCategoryDTO("root2");
         SubCategoryDTO subCategory2 = new SubCategoryDTO(rootCategory2.name, "sub2");
-        SubSubCategoryDTO category2 = new SubSubCategoryDTO(subCategory2.name, "category2");
-        SubSubCategoryDTO category3 = new SubSubCategoryDTO(subCategory2.name, "category3");
+        SubSubCategoryDTO category2 = new SubSubCategoryDTO(subCategory2.name, "subsub2");
+        SubSubCategoryDTO category3 = new SubSubCategoryDTO(subCategory2.name, "subsub3");
         registerCategory(rootCategory2, "/categories");
         registerCategory(subCategory2, "/subcategories");
         registerCategory(category2, "/subsubcategories");
@@ -173,26 +175,26 @@ public class QuizRestIT extends QuizRestTestBase {
     public void testGetAllByCategory() {
         createSomeQuizes();
         testGet("/categories/{id}", category.name).body("size()", is(4));
-        testGet("/categories/{id}", "root2").body("size()", is(2));
-        testGet("/categories/{id}", "none").body("size()", is(0));
+        testGet("/categories/{id}", "subsub2").body("size()", is(2));
+        testGet("/categories/{id}", "subsub3").body("size()", is(0));
     }
 
     @Test
     public void testInvalidGetByCategory() {
-        testGet("/countries/foo").statusCode(400);
+        testGet("/categories/{id}", "foo", 400);
     }
 
     @Test
     public void testInvalidCategory() {
         QuizDTO quizDTO = createQuizDTO();
-        quizDTO.category = null;
+        quizDTO.category = new SubSubCategoryDTO("null", "null");
         testRegisterQuiz(quizDTO, 400);
     }
 
     @Test
     public void testPostWithId() {
         QuizDTO quizDTO = createQuizDTO();
-        testRegisterQuiz(createQuizDTO("1", quizDTO.category, quizDTO.question, quizDTO.answerList, quizDTO.correctAnswer)).statusCode(400);
+        testRegisterQuiz(createQuizDTO("1", quizDTO.category, quizDTO.question, quizDTO.answerList, quizDTO.correctAnswer), 400);
     }
 
     @Test
