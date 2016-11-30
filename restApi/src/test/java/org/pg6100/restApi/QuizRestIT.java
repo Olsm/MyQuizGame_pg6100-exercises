@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.core.Is.is;
@@ -58,12 +59,12 @@ public class QuizRestIT extends QuizRestTestBase {
         String id = testRegisterQuiz(dto).extract().asString();
         testGet().body("size()", is(1));
         testGet("/id/{id}", id)
-                .body("id", is(id))
-                .body("category.name", is(category.name))
-                .body("category.subCategoryName", is(category.subCategoryName))
-                .body("question", is(question))
-                .body("answerList", is(answerList))
-                .body("correctAnswer", is(correctAnswer));
+                .body("id", hasItem(id))
+                .body("category.name", hasItem(category.name))
+                .body("category.subCategoryName", hasItem(category.subCategoryName))
+                .body("question", hasItem(question))
+                .body("answerList", hasItem(answerList))
+                .body("correctAnswer", hasItem(correctAnswer));
     }
 
     @Test

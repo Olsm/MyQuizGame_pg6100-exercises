@@ -22,6 +22,14 @@ public interface SubCategoryRestApi {
     @GET
     Set<SubCategoryDTO> get();
 
+    @ApiOperation("Get subcategory by id (name)")
+    @GET
+    @Path("/{id}")
+    SubCategoryDTO getSubCategoryById(
+            @ApiParam(ID_PARAM)
+            @PathParam("id")
+                    String name);
+
     @ApiOperation("Create a subcategory")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -29,16 +37,6 @@ public interface SubCategoryRestApi {
     String createSubCategory(
             @ApiParam("Category name and root category")
                     SubCategoryDTO dto);
-
-    @ApiOperation("Get subcategory by id (name)")
-    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
-    @GET
-    @Path("/id/{id}")
-    @Deprecated
-    Response deprecatedGetSubCategoryById(
-            @ApiParam(ID_PARAM)
-            @PathParam("id")
-                    String category);
 
     @ApiOperation("Update sub category by id (name)")
     @PUT
@@ -64,6 +62,19 @@ public interface SubCategoryRestApi {
             @ApiParam(ID_PARAM)
             @PathParam("id")
                     String category);
+
+
+    /* Deprecated methods */
+
+    @ApiOperation("Get subcategory by id (name)")
+    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
+    @GET
+    @Path("/id/{id}")
+    @Deprecated
+    Response deprecatedGetSubCategoryById(
+            @ApiParam(ID_PARAM)
+            @PathParam("id")
+                    String name);
 
     @ApiOperation("GET all subcategories with the given parent specified by id (name)")
     @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})

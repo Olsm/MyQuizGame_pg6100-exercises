@@ -47,6 +47,14 @@ public interface QuizRestApi {
     @GET
     List<QuizDTO> get();
 
+    @ApiOperation("Get a single quiz specified by id")
+    @GET
+    @Path("/{id}")
+    QuizDTO getById(
+            @ApiParam(ID_PARAM)
+            @PathParam("id")
+                    Long id);
+
 
     /*
         NOTE: in the following, we use the URI path to
@@ -71,18 +79,6 @@ public interface QuizRestApi {
     Long createQuiz(
             @ApiParam("quiz question, answers and correct answer. Should not specify id or creation time")
                     QuizDTO dto);
-
-
-
-    @ApiOperation("Get a single quiz specified by id")
-    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
-    @GET
-    @Path("/id/{id}")
-    @Deprecated
-    Response deprecatedGetById(
-            @ApiParam(ID_PARAM)
-            @PathParam("id")
-                    Long id);
 
         /*
             PUT is idempotent (ie, applying 1 or 1000 times should end up in same result on the server).
@@ -134,6 +130,17 @@ public interface QuizRestApi {
     @DELETE
     @Path("/id/{id}")
     void delete(
+            @ApiParam(ID_PARAM)
+            @PathParam("id")
+                    Long id);
+
+    /* Deprecated methods */
+    @ApiOperation("Get a single quiz specified by id")
+    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
+    @GET
+    @Path("/id/{id}")
+    @Deprecated
+    Response deprecatedGetById(
             @ApiParam(ID_PARAM)
             @PathParam("id")
                     Long id);

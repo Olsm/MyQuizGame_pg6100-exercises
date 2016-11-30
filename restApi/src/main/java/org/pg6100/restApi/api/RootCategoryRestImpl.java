@@ -15,6 +15,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import java.util.List;
 import java.util.Set;
 
@@ -28,8 +29,23 @@ public class RootCategoryRestImpl implements RootCategoryRestApi {
     private QuizEJB qEJB;
 
     @Override
-    public Set<RootCategoryDTO> get() {
-        return CategoryConverter.transformCategories(cEJB.getAllRootCategories());
+    public Set<RootCategoryDTO> get(boolean withQuizes) {
+        if (withQuizes)
+            return CategoryConverter.transformCategories(cEJB.getRootCategoriesWithQuizes());
+        else
+            return CategoryConverter.transformCategories(cEJB.getAllRootCategories());
+    }
+
+    @Override
+    public RootCategoryDTO getRootCategoryById(String name) {
+        requireRootCategory(name);
+        return CategoryConverter.transform(cEJB.getRootCategory(name));
+    }
+
+    @Override
+    public Set<SubCategoryDTO> getSubCategoriesByRootCategory(String name) {
+        requireRootCategory(name);
+        return CategoryConverter.transformSubCategories(cEJB.getRootCategory(name).getSubCategoryList());
     }
 
     @Override
@@ -45,11 +61,6 @@ public class RootCategoryRestImpl implements RootCategoryRestApi {
         }
 
         return rootCategory.getName();
-    }
-
-    @Override
-    public Response deprecatedGetRootCategoryById(String name) {
-        return CategoryConverter.transform(cEJB.getRootCategory(name));
     }
 
     @Override
@@ -69,17 +80,13 @@ public class RootCategoryRestImpl implements RootCategoryRestApi {
         cEJB.deleteRootCategory(name);
     }
 
-    @Override
-    public Response deprecatedGetWithQuizes() {
-        return CategoryConverter.transformCategories(cEJB.getRootCategoriesWithQuizes());
-    }
-
-    @Override
-    public Response deprecatedGetSubCategoriesByRootCategory(String name) {
-        return CategoryConverter.transformSubCategories(cEJB.getRootCategory(name).getSubCategoryList());
-    }
-
     //----------------------------------------------------------
+
+    private void requireRootCategory(String name) throws WebApplicationException {
+        if (!cEJB.rootCatExists(name)) {
+            throw new WebApplicationException("Cannot find root category: " + name, 404);
+        }
+    }
 
     private WebApplicationException wrapException(Exception e) throws WebApplicationException{
 
@@ -95,5 +102,31 @@ public class RootCategoryRestImpl implements RootCategoryRestApi {
         } else {
             return new WebApplicationException("Internal error", 500);
         }
+    }
+
+
+    /* Deprecated methods */
+
+    @Override
+    public Response deprecatedGetRootCategoryById(String name) {
+        return Response.status(301)
+                .location(UriBuilder.fromUri("categories")
+                        .queryParam("id", name).build())
+                .build();
+    }
+
+    @Override
+    public Response deprecatedGetWithQuizes() {
+        return Response.status(301)
+                .location(UriBuilder.fromUri("subcategories")
+                        .queryParam("withQuizes").build())
+                .build();
+    }
+
+    @Override
+    public Response deprecatedGetSubCategoriesByRootCategory(String name) {
+        return Response.status(301)
+                .location(UriBuilder.fromUri("categories/" + name + "/subcategories").build())
+                .build();
     }
 }

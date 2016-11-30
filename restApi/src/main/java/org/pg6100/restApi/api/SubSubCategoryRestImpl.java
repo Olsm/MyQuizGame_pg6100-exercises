@@ -18,6 +18,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import java.util.List;
 import java.util.Set;
 
@@ -31,8 +32,17 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
     private QuizEJB qEJB;
 
     @Override
-    public Set<SubSubCategoryDTO> get() {
-        return CategoryConverter.transformSubSubCategories(cEJB.getAllSubSubCategories());
+    public Set<SubSubCategoryDTO> get(boolean withQuizes) {
+        if (withQuizes)
+            return CategoryConverter.transformSubSubCategories(cEJB.getSubSubCategoriesWithQuizes());
+        else
+            return CategoryConverter.transformSubSubCategories(cEJB.getAllSubSubCategories());
+    }
+
+    @Override
+    public SubSubCategoryDTO getSubSubCategoryById(String name) {
+        requireSubSubCategory(name);
+        return CategoryConverter.transform(cEJB.getSubSubCategory(name));
     }
 
     @Override
@@ -53,16 +63,9 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
     }
 
     @Override
-    public Response deprecatedGetSubSubCategoryById(String name) {
-        return CategoryConverter.transform(cEJB.getSubSubCategory(name));
-    }
-
-    @Override
     public void updateSubSubCategory(String name, SubSubCategoryDTO dto) {
-        if (!cEJB.subSubCatExists(name))
-            throw new WebApplicationException("Cannot find category with name: " + name, 404);
-        else if (!cEJB.subCatExists(dto.subCategoryName))
-            throw new WebApplicationException("Cannot find sub category with name: " + name, 404);
+        requireSubCategory(dto.subCategoryName);
+        requireSubSubCategory(name);
 
         try {
             cEJB.updateSubSubCategory(name, dto.name, dto.subCategoryName);
@@ -77,23 +80,24 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
     }
 
     @Override
-    public Set<SubSubCategoryDTO> getSubSubWithQuizes() {
-        return CategoryConverter.transformSubSubCategories(cEJB.getSubSubCategoriesWithQuizes());
-    }
-
-    @Override
-    public Response deprecatedGetSubSubBySubCategory(String name) {
+    public Set<SubSubCategoryDTO> getSubSubBySubCategory(String name) {
+        requireSubCategory(name);
         return CategoryConverter.transformSubSubCategories(cEJB.getSubCategory(name).getSubSubCategoryList());
     }
 
-    @Override
-    public Response deprecatedGetSubSubWithGivenSubParentByCategory(String name) {
-        if (!cEJB.subSubCatExists(name))
-            throw new WebApplicationException("Cannot find category with name: " + name, 404);
-        return CategoryConverter.transformSubSubCategories(cEJB.getSubSubCategory(name).getSubCategory().getSubSubCategoryList());
+    //----------------------------------------------------------
+
+    private void requireSubCategory(String name) throws WebApplicationException {
+        if (!cEJB.subCatExists(name)) {
+            throw new WebApplicationException("Cannot find sub category: " + name, 404);
+        }
     }
 
-    //----------------------------------------------------------
+    private void requireSubSubCategory(String name) throws WebApplicationException {
+        if (!cEJB.subCatExists(name)) {
+            throw new WebApplicationException("Cannot find sub category: " + name, 404);
+        }
+    }
 
     private WebApplicationException wrapException(Exception e) throws WebApplicationException{
 
@@ -109,5 +113,43 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
         } else {
             return new WebApplicationException("Internal error", 500);
         }
+    }
+
+
+    /* Deprecated methods */
+
+    @Override
+    public Response deprecatedGetSubSubCategoryById(String name) {
+        return Response.status(301)
+                .location(UriBuilder.fromUri("subsubcategories")
+                        .queryParam("id", name).build())
+                .build();
+    }
+
+    @Override
+    public Response deprecatedGetSubSubBySubCategory(String name) {
+        return Response.status(301)
+                .location(UriBuilder.fromUri("subcategories")
+                        .queryParam("id", name)
+                        .uri("subsubcategories").build())
+                .build();
+    }
+
+    @Override
+    public Response deprecatedGetSubSubWithGivenSubParentByCategory(String name) {
+        if (!cEJB.subSubCatExists(name))
+            throw new WebApplicationException("Cannot find category with name: " + name, 404);
+        return Response.status(301)
+                .location(UriBuilder.fromUri("subcategories")
+                        .queryParam("id", name).uri("subsubcategories").build())
+                .build();
+    }
+
+    @Override
+    public Response deprecatedGetSubSubWithQuizes() {
+        return Response.status(301)
+                .location(UriBuilder.fromUri("subsubcategories")
+                        .queryParam("withQuizes").build())
+                .build();
     }
 }

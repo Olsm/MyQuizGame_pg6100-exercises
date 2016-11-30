@@ -20,7 +20,19 @@ public interface RootCategoryRestApi {
 
     @ApiOperation("Get all the categories")
     @GET
-    Set<RootCategoryDTO> get();
+    Set<RootCategoryDTO> get(
+            @ApiParam("Root categories with quizes")
+            @QueryParam("withQuizes")
+                    boolean withQuizes
+    );
+
+    @ApiOperation("Get category by id (name)")
+    @GET
+    @Path("/{id}")
+    RootCategoryDTO getRootCategoryById(
+            @ApiParam(ID_PARAM)
+            @PathParam("id")
+                    String category);
 
     @ApiOperation("Create a category")
     @POST
@@ -29,16 +41,6 @@ public interface RootCategoryRestApi {
     String createRootCategory(
             @ApiParam("Category name")
                     RootCategoryDTO dto);
-
-    @ApiOperation("Get category by id (name)")
-    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
-    @GET
-    @Path("/id/{id}")
-    @Deprecated
-    Response deprecatedGetRootCategoryById(
-            @ApiParam(ID_PARAM)
-            @PathParam("id")
-                    String category);
 
     @ApiOperation("Update category by id (name)")
     @PUT
@@ -64,6 +66,27 @@ public interface RootCategoryRestApi {
             @ApiParam(ID_PARAM)
             @PathParam("id")
                     String name);
+
+    @ApiOperation("GET all subcategories of the category specified by id (name)")
+    @GET
+    @Path("/{id}/subcategories")
+    Set<SubCategoryDTO> getSubCategoriesByRootCategory(
+            @ApiParam("The root category name")
+            @PathParam("id")
+                    String name);
+
+
+    /* Deprecated methods */
+
+    @ApiOperation("Get category by id (name)")
+    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
+    @GET
+    @Path("/id/{id}")
+    @Deprecated
+    Response deprecatedGetRootCategoryById(
+            @ApiParam(ID_PARAM)
+            @PathParam("id")
+                    String category);
 
     @ApiOperation("all categories that have at least one subcategory with at least one subsubcategory with at least one quiz.")
     @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})

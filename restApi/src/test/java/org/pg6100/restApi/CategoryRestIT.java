@@ -229,7 +229,7 @@ public class CategoryRestIT extends CategoryRestTestBase {
                 .get(path + "/id/{id}")
                 .then()
                 .statusCode(200)
-                .body("name", is(name));
+                .body("name", hasItem(name));
     }
 
 

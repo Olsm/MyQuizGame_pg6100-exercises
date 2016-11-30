@@ -20,7 +20,19 @@ public interface SubSubCategoryRestApi {
 
     @ApiOperation("Get all the sub sub categories")
     @GET
-    Set<SubSubCategoryDTO> get();
+    Set<SubSubCategoryDTO> get(
+            @ApiParam("Root categories with quizes")
+            @QueryParam("withQuizes")
+                    boolean withQuizes
+    );
+
+    @ApiOperation("Get subsub category by id (name)")
+    @GET
+    @Path("/{id}")
+    SubSubCategoryDTO getSubSubCategoryById(
+            @ApiParam(ID_PARAM)
+            @PathParam("id")
+                    String name);
 
     @ApiOperation("Create a subsub category")
     @POST
@@ -30,19 +42,9 @@ public interface SubSubCategoryRestApi {
             @ApiParam("Category name and sub category")
                     SubSubCategoryDTO dto);
 
-    @ApiOperation("Get subsub category by id (name)")
-    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
-    @GET
-    @Path("/id/{id}")
-    @Deprecated
-    Response deprecatedGetSubSubCategoryById(
-            @ApiParam(ID_PARAM)
-            @PathParam("id")
-                    String name);
-
     @ApiOperation("Update subsub category by id (name)")
     @PUT
-    @Path("/id/{id}")
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     void updateSubSubCategory(
             @ApiParam(ID_PARAM)
@@ -65,10 +67,26 @@ public interface SubSubCategoryRestApi {
             @PathParam("id")
                     String name);
 
-    @ApiOperation("Get all subsubcategories with at least one quiz")
+    @ApiOperation("GET all subsubcategories of the subcategory specified by id (name)")
     @GET
-    @Path("/withQuizzes/subsubcategories")
-    Set<SubSubCategoryDTO> getSubSubWithQuizes();
+    @Path("/{id}/subsubcategories")
+    Set<SubSubCategoryDTO> getSubSubBySubCategory(
+            @ApiParam("The sub category name")
+            @PathParam("id")
+                    String name);
+
+
+    /* Deprecated methods */
+
+    @ApiOperation("Get subsub category by id (name)")
+    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
+    @GET
+    @Path("/id/{id}")
+    @Deprecated
+    Response deprecatedGetSubSubCategoryById(
+            @ApiParam(ID_PARAM)
+            @PathParam("id")
+                    String name);
 
     @ApiOperation("GET all subsubcategories of the subcategory specified by id (name)")
     @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
@@ -89,4 +107,12 @@ public interface SubSubCategoryRestApi {
             @ApiParam("The subsub category name")
             @PathParam("id")
                     String name);
+
+
+    @ApiOperation("Get all subsubcategories with at least one quiz")
+    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
+    @GET
+    @Deprecated
+    @Path("/withQuizzes/subsubcategories")
+    Response deprecatedGetSubSubWithQuizes();
 }

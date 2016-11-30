@@ -14,6 +14,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -33,6 +34,11 @@ public class SubCategoryRestImpl implements SubCategoryRestApi {
         return CategoryConverter.transformSubCategories(cEJB.getAllSubCategories());
     }
 
+    @Override
+    public SubCategoryDTO getSubCategoryById(String name) {
+        requireSubCategory(name);
+        return CategoryConverter.transform(cEJB.getSubCategory(name));
+    }
 
     @Override
     public String createSubCategory(SubCategoryDTO dto) {
@@ -52,16 +58,9 @@ public class SubCategoryRestImpl implements SubCategoryRestApi {
     }
 
     @Override
-    public Response deprecatedGetSubCategoryById(String name) {
-        return CategoryConverter.transform(cEJB.getSubCategory(name));
-    }
-
-    @Override
     public void updateSubCategory(String name, SubCategoryDTO dto) {
-        if (! cEJB.subCatExists(name))
-            throw new WebApplicationException("Cannot find category with name: " + name, 404);
-        else if (! cEJB.rootCatExists(dto.rootCategoryName))
-            throw new WebApplicationException("Cannot find root category with name: " + name, 404);
+        requireRootCategory(dto.rootCategoryName);
+        requireSubCategory(name);
 
         try {
             cEJB.updateSubCategory(name, dto.name, dto.rootCategoryName);
@@ -75,12 +74,19 @@ public class SubCategoryRestImpl implements SubCategoryRestApi {
         cEJB.deleteSubCategory(name);
     }
 
-    @Override
-    public Response deprecatedGetSubWithGivenParentByCategory(String name) {
-        return CategoryConverter.transformSubCategories(cEJB.getRootCategory(name).getSubCategoryList());
+    //----------------------------------------------------------
+
+    private void requireRootCategory(String name) throws WebApplicationException {
+        if (!cEJB.rootCatExists(name)) {
+            throw new WebApplicationException("Cannot find root category: " + name, 404);
+        }
     }
 
-    //----------------------------------------------------------
+    private void requireSubCategory(String name) throws WebApplicationException {
+        if (!cEJB.subCatExists(name)) {
+            throw new WebApplicationException("Cannot find sub category: " + name, 404);
+        }
+    }
 
     private WebApplicationException wrapException(Exception e) throws WebApplicationException{
 
@@ -96,5 +102,24 @@ public class SubCategoryRestImpl implements SubCategoryRestApi {
         } else {
             return new WebApplicationException("Internal error", 500);
         }
+    }
+
+
+    /* Deprecated methods */
+
+    @Override
+    public Response deprecatedGetSubCategoryById(String name) {
+        return Response.status(301)
+                .location(UriBuilder.fromUri("subcategories")
+                        .queryParam("id", name).build())
+                .build();
+    }
+
+    @Override
+    public Response deprecatedGetSubWithGivenParentByCategory(String name) {
+        return Response.status(301)
+                .location(UriBuilder.fromUri("categories")
+                        .queryParam("id", name).uri("subcategories").build())
+                .build();
     }
 }

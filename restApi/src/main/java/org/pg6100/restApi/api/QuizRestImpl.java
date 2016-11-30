@@ -14,6 +14,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import java.util.List;
 
 /*
@@ -93,8 +95,7 @@ public class QuizRestImpl implements QuizRestApi {
         if(id != pathId)
             throw new WebApplicationException("Not allowed to change the id of the resource", 409);
 
-        if(! QEJB.isPresent(id))
-            throw new WebApplicationException("Not allowed to create a quiz with PUT, and cannot find quiz with id: "+id, 404);
+        requireQuiz(id);
 
         try {
             QEJB.update(id, dto.question, dto.answerList, dto.answerList.indexOf(dto.correctAnswer));
@@ -105,9 +106,7 @@ public class QuizRestImpl implements QuizRestApi {
 
     @Override
     public void updateQuestion(Long id, String question){
-        if(! QEJB.isPresent(id)){
-            throw new WebApplicationException("Cannot find quiz with id: "+id, 404);
-        }
+        requireQuiz(id);
 
         try {
             QEJB.updateQuizQuestion(id, question);
@@ -124,6 +123,12 @@ public class QuizRestImpl implements QuizRestApi {
 
     //----------------------------------------------------------
 
+    private void requireQuiz(Long id) throws WebApplicationException {
+        if (!QEJB.isPresent(id)) {
+            throw new WebApplicationException("Cannot find quiz with id: " + id, 404);
+        }
+    }
+
     private WebApplicationException wrapException(Exception e) throws WebApplicationException{
 
         /*
@@ -138,5 +143,15 @@ public class QuizRestImpl implements QuizRestApi {
         } else {
             return new WebApplicationException("Internal error", 500);
         }
+    }
+
+    /* Deprecated methods */
+
+    @Override
+    public Response deprecatedGetById(Long id) {
+        return Response.status(301)
+                .location(UriBuilder.fromUri("quiz")
+                        .queryParam("id", id).build())
+                .build();
     }
 }
