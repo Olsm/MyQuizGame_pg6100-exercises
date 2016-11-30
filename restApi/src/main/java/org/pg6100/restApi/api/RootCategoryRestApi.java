@@ -7,6 +7,7 @@ import org.pg6100.restApi.dto.SubSubCategoryDTO;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Set;
 
@@ -30,9 +31,11 @@ public interface RootCategoryRestApi {
                     RootCategoryDTO dto);
 
     @ApiOperation("Get category by id (name)")
+    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
     @GET
     @Path("/id/{id}")
-    RootCategoryDTO getRootCategoryById(
+    @Deprecated
+    Response deprecatedGetRootCategoryById(
             @ApiParam(ID_PARAM)
             @PathParam("id")
                     String category);
@@ -63,14 +66,18 @@ public interface RootCategoryRestApi {
                     String name);
 
     @ApiOperation("all categories that have at least one subcategory with at least one subsubcategory with at least one quiz.")
+    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
     @GET
     @Path("/withQuizzes")
-    Set<RootCategoryDTO> getWithQuizes();
+    @Deprecated
+    Response deprecatedGetWithQuizes();
 
     @ApiOperation("GET all subcategories of the category specified by id (name)")
+    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
     @GET
     @Path("/id/{id}/subcategories")
-    Set<SubCategoryDTO> getSubCategoriesByRootCategory(
+    @Deprecated
+    Response deprecatedGetSubCategoriesByRootCategory(
             @ApiParam("The root category name")
             @PathParam("id")
                     String name);

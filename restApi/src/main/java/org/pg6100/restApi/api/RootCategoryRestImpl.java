@@ -14,6 +14,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Set;
 
@@ -47,7 +48,7 @@ public class RootCategoryRestImpl implements RootCategoryRestApi {
     }
 
     @Override
-    public RootCategoryDTO getRootCategoryById(String name) {
+    public Response deprecatedGetRootCategoryById(String name) {
         return CategoryConverter.transform(cEJB.getRootCategory(name));
     }
 
@@ -69,12 +70,12 @@ public class RootCategoryRestImpl implements RootCategoryRestApi {
     }
 
     @Override
-    public Set<RootCategoryDTO> getWithQuizes() {
+    public Response deprecatedGetWithQuizes() {
         return CategoryConverter.transformCategories(cEJB.getRootCategoriesWithQuizes());
     }
 
     @Override
-    public Set<SubCategoryDTO> getSubCategoriesByRootCategory(String name) {
+    public Response deprecatedGetSubCategoriesByRootCategory(String name) {
         return CategoryConverter.transformSubCategories(cEJB.getRootCategory(name).getSubCategoryList());
     }
 

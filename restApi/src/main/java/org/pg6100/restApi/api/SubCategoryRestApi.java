@@ -1,15 +1,13 @@
 package org.pg6100.restApi.api;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.*;
 import org.pg6100.restApi.dto.RootCategoryDTO;
 import org.pg6100.restApi.dto.SubCategoryDTO;
 import org.pg6100.restApi.dto.SubSubCategoryDTO;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Set;
 
@@ -33,9 +31,11 @@ public interface SubCategoryRestApi {
                     SubCategoryDTO dto);
 
     @ApiOperation("Get subcategory by id (name)")
+    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
     @GET
     @Path("/id/{id}")
-    SubCategoryDTO getSubCategoryById(
+    @Deprecated
+    Response deprecatedGetSubCategoryById(
             @ApiParam(ID_PARAM)
             @PathParam("id")
                     String category);
@@ -66,9 +66,11 @@ public interface SubCategoryRestApi {
                     String category);
 
     @ApiOperation("GET all subcategories with the given parent specified by id (name)")
+    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
     @GET
     @Path("/parent/{id}")
-    Set<SubCategoryDTO> getSubWithGivenParentByCategory(
+    @Deprecated
+    Response deprecatedGetSubWithGivenParentByCategory(
             @ApiParam("The root category name")
             @PathParam("id")
                     String name);

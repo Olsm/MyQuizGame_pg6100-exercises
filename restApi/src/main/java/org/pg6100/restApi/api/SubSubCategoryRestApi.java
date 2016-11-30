@@ -1,15 +1,13 @@
 package org.pg6100.restApi.api;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.*;
 import org.pg6100.restApi.dto.RootCategoryDTO;
 import org.pg6100.restApi.dto.SubCategoryDTO;
 import org.pg6100.restApi.dto.SubSubCategoryDTO;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Set;
 
@@ -33,9 +31,11 @@ public interface SubSubCategoryRestApi {
                     SubSubCategoryDTO dto);
 
     @ApiOperation("Get subsub category by id (name)")
+    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
     @GET
     @Path("/id/{id}")
-    SubSubCategoryDTO getSubSubCategoryById(
+    @Deprecated
+    Response deprecatedGetSubSubCategoryById(
             @ApiParam(ID_PARAM)
             @PathParam("id")
                     String name);
@@ -71,17 +71,21 @@ public interface SubSubCategoryRestApi {
     Set<SubSubCategoryDTO> getSubSubWithQuizes();
 
     @ApiOperation("GET all subsubcategories of the subcategory specified by id (name)")
+    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
     @GET
     @Path("/id/{id}/subsubcategories")
-    Set<SubSubCategoryDTO> getSubSubBySubCategory(
+    @Deprecated
+    Response deprecatedGetSubSubBySubCategory(
             @ApiParam("The sub category name")
             @PathParam("id")
                     String name);
 
     @ApiOperation("GET all subsubcategories with the given subcategory parent specified by id (name)")
+    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
     @GET
     @Path("/parent/{id}")
-    Set<SubSubCategoryDTO> getSubSubWithGivenSubParentByCategory(
+    @Deprecated
+    Response deprecatedGetSubSubWithGivenSubParentByCategory(
             @ApiParam("The subsub category name")
             @PathParam("id")
                     String name);

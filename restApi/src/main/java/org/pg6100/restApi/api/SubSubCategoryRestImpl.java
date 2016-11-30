@@ -17,6 +17,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Set;
 
@@ -52,7 +53,7 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
     }
 
     @Override
-    public SubSubCategoryDTO getSubSubCategoryById(String name) {
+    public Response deprecatedGetSubSubCategoryById(String name) {
         return CategoryConverter.transform(cEJB.getSubSubCategory(name));
     }
 
@@ -81,12 +82,12 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
     }
 
     @Override
-    public Set<SubSubCategoryDTO> getSubSubBySubCategory(String name) {
+    public Response deprecatedGetSubSubBySubCategory(String name) {
         return CategoryConverter.transformSubSubCategories(cEJB.getSubCategory(name).getSubSubCategoryList());
     }
 
     @Override
-    public Set<SubSubCategoryDTO> getSubSubWithGivenSubParentByCategory(String name) {
+    public Response deprecatedGetSubSubWithGivenSubParentByCategory(String name) {
         if (!cEJB.subSubCatExists(name))
             throw new WebApplicationException("Cannot find category with name: " + name, 404);
         return CategoryConverter.transformSubSubCategories(cEJB.getSubSubCategory(name).getSubCategory().getSubSubCategoryList());

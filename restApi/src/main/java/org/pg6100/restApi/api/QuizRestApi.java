@@ -1,14 +1,12 @@
 package org.pg6100.restApi.api;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.*;
 import org.pg6100.quiz.datalayer.SubSubCategory;
 import org.pg6100.restApi.dto.QuizDTO;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /*
@@ -77,9 +75,11 @@ public interface QuizRestApi {
 
 
     @ApiOperation("Get a single quiz specified by id")
+    @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
     @GET
     @Path("/id/{id}")
-    QuizDTO getById(
+    @Deprecated
+    Response deprecatedGetById(
             @ApiParam(ID_PARAM)
             @PathParam("id")
                     Long id);
