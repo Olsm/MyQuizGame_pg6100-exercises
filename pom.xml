@@ -13,6 +13,7 @@
         <module>quiz</module>
         <module>utils</module>
         <module>QuizAPI</module>
+        <module>GameAPI</module>
     </modules>
 
 
