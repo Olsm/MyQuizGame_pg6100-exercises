@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>org.pg6100</groupId>
-            <artifactId>restApi</artifactId>
+            <artifactId>QuizAPI</artifactId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency>

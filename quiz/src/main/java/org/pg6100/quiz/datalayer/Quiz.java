@@ -107,8 +107,8 @@ public class Quiz {
         final Quiz other = (Quiz) obj;
 
         boolean sameId = (this.getId() == null) ? other.getId() == null : this.getId().equals(other.getId());
-        boolean sameQAndA = (this.getQuestion() == other.getQuestion() &&
-                this.getAnswers() == other.getAnswers() && this.getCorrectAnswer() == other.getCorrectAnswer());
+        boolean sameQAndA = (Objects.equals(this.getQuestion(), other.getQuestion()) &&
+                this.getAnswers() == other.getAnswers() && Objects.equals(this.getCorrectAnswer(), other.getCorrectAnswer()));
 
         return sameId || sameQAndA;
     }
