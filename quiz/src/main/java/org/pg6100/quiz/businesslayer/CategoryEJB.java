@@ -86,13 +86,13 @@ public class CategoryEJB {
         return true;
     }
 
-    public boolean updateSubSubCategory(@NotNull Long id, @NotNull String newCategory, @NotNull Long subCategoryId) {
-        SubCategory subCat = getSubCategory(subCategoryId);
+    public boolean updateSubSubCategory(@NotNull Long id, @NotNull String newName, @NotNull Long newSubCategoryId) {
+        SubCategory subCat = getSubCategory(newSubCategoryId);
         SubSubCategory subSubCat = getSubSubCategory(id);
         if (subCat == null || subSubCat == null) {
             return false;
         }
-        subSubCat.setName(newCategory);
+        subSubCat.setName(newName);
         subSubCat.setSubCategory(subCat);
         return true;
     }

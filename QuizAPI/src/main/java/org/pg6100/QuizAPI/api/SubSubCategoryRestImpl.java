@@ -91,7 +91,7 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
     }
 
     private void requireSubSubCategory(Long id) throws WebApplicationException {
-        if (!cEJB.subCatExists(id)) {
+        if (!cEJB.subSubCatExists(id)) {
             throw new WebApplicationException("Cannot find sub category with id " + id, 404);
         }
     }

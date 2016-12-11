@@ -59,13 +59,13 @@ public class QuizRestIT extends QuizRestTestBase {
         QuizDTO dto = createQuizDTO(null, category, question, answerList, correctAnswer);
         String id = testRegisterQuiz(dto);
         testGet().body("size()", is(1));
-        testGet("/id/{id}", id)
-                .body("id", hasItem(id))
-                .body("category.name", hasItem(category.name))
-                .body("category.subCategoryId", hasItem(category.subCategoryId))
-                .body("question", hasItem(question))
-                .body("answerList", hasItem(answerList))
-                .body("correctAnswer", hasItem(correctAnswer));
+        testGet("/{id}", id)
+                .body("id", is(id))
+                .body("category.name", is(category.name))
+                .body("category.subCategoryId", is(category.subCategoryId))
+                .body("question", is(question))
+                .body("answerList", is(answerList))
+                .body("correctAnswer", is(correctAnswer));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class QuizRestIT extends QuizRestTestBase {
         String id = testRegisterQuiz(createQuizDTO());
         testGet().body("id", is(Collections.singletonList(id)));
 
-        delete("/quiz/id/" + id);
+        delete("/quiz/" + id);
         testGet().body("id", not(Collections.singletonList(id)));
     }
 
@@ -99,7 +99,7 @@ public class QuizRestIT extends QuizRestTestBase {
         given().contentType(ContentType.TEXT)
                 .body(anotherQuestion)
                 .pathParam("id", id)
-                .put("/quiz/id/{id}/question")
+                .put("/quiz/{id}/question")
                 .then()
                 .statusCode(204);
 
@@ -280,7 +280,7 @@ public class QuizRestIT extends QuizRestTestBase {
         return given().contentType(ContentType.JSON)
                 .pathParam("id", id)
                 .body(dto)
-                .put("/quiz/id/{id}")
+                .put("/quiz/{id}")
                 .then()
                 .statusCode(statusCode);
     }

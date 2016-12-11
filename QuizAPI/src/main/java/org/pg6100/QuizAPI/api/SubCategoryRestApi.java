@@ -37,7 +37,7 @@ public interface SubCategoryRestApi {
 
     @ApiOperation("Update sub category by id")
     @PUT
-    @Path("/id/{id}")
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     void updateSubCategory(
             @ApiParam(ID_PARAM)
@@ -54,7 +54,7 @@ public interface SubCategoryRestApi {
 
     @ApiOperation("Delete a sub category with given id")
     @DELETE
-    @Path("/id/{id}")
+    @Path("/{id}")
     void deleteSubCategory(
             @ApiParam(ID_PARAM)
             @PathParam("id")

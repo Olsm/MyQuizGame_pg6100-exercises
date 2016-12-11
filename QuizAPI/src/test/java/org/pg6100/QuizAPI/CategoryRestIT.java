@@ -44,7 +44,6 @@ public class CategoryRestIT extends CategoryRestTestBase {
 
         SubCategoryDTO dto = createSubCategoryDTO(rootDTO.id, "name");
         get("/subcategories").then().statusCode(200).body("size()", is(1));
-
         testGetCategory("/subcategories", dto.id);
     }
 
@@ -56,7 +55,6 @@ public class CategoryRestIT extends CategoryRestTestBase {
 
         SubSubCategoryDTO dto = createSubSubCategoryDTO(subDTO.id, "name");
         get("/subsubcategories").then().statusCode(200).body("size()", is(1));
-
         testGetCategory("/subsubcategories", dto.id);
     }
 
@@ -68,15 +66,13 @@ public class CategoryRestIT extends CategoryRestTestBase {
             .body("name", hasItems("name1", "name2"));
     }
 
-    /* TODO
     @Test
     public void testUpdateRootCategory() throws Exception {
         RootCategoryDTO dto = createRootCategoryDTO("name1");
         dto.name = "name2";
-        updateCategory(dto, "name1", "/categories");
-        testGetCategory("/categories", "name2");
+        updateCategory(dto, dto.id, "/categories");
+        testGetCategory("/categories", dto.id);
     }
-    */
 
     @Test
     public void testDeleteRootCategory() throws Exception {
@@ -102,12 +98,14 @@ public class CategoryRestIT extends CategoryRestTestBase {
                 .body("name", hasItems("name1", "name2"));
     }
 
-    /* TODO
     @Test
     public void testUpdateSubCategory() throws Exception {
-
+        RootCategoryDTO rootDTO = createRootCategoryDTO("root");
+        SubCategoryDTO subDTO = createSubCategoryDTO(rootDTO.id, "name1");
+        subDTO.name = "name2";
+        updateCategory(subDTO, subDTO.id, "/subcategories");
+        testGetCategory("/subcategories", subDTO.id);
     }
-    */
 
     @Test
     public void testDeleteSubCategory() throws Exception {
@@ -126,7 +124,7 @@ public class CategoryRestIT extends CategoryRestTestBase {
         SubCategoryDTO subDTO3 = createSubCategoryDTO(rootDTO2.id, "sub3");
 
         given().pathParam("id", rootDTO.id)
-                .get("/categories/id/{id}/subcategories")
+                .get("/categories/{id}/subcategories")
                 .then()
                 .statusCode(200)
                 .body("name", hasItems("sub1", "sub2"));
@@ -147,13 +145,15 @@ public class CategoryRestIT extends CategoryRestTestBase {
                 .body("name", hasItems("sub1", "sub2"));
     }
 
-
-    /* TODO
     @Test
     public void testUpdateSubSubCategory() throws Exception {
-
+        RootCategoryDTO rootDTO = createRootCategoryDTO("root");
+        SubCategoryDTO subDTO = createSubCategoryDTO(rootDTO.id, "sub");
+        SubSubCategoryDTO subSubDTO = createSubSubCategoryDTO(subDTO.id, "name1");
+        subSubDTO.name = "name2";
+        updateCategory(subSubDTO, subSubDTO.id, "/subsubcategories");
+        testGetCategory("/subsubcategories", subSubDTO.id);
     }
-    */
 
     @Test
     public void testDeleteSubSubCategory() throws Exception {
@@ -183,7 +183,7 @@ public class CategoryRestIT extends CategoryRestTestBase {
         createSubSubCategoryDTO(subDTO.id, "subsub2");
 
         given().pathParam("id", subDTO.id)
-                .get("/subsubcategories/id/{id}/subsubcategories")
+                .get("/subsubcategories/{id}/subsubcategories")
                 .then()
                 .statusCode(200)
                 .body("name", hasItems("subsub1", "subsub2"));
@@ -224,10 +224,10 @@ public class CategoryRestIT extends CategoryRestTestBase {
 
     private void testGetCategory(String path, String id) {
         given().pathParam("id", id)
-                .get(path + "/id/{id}")
+                .get(path + "/{id}")
                 .then()
                 .statusCode(200)
-                .body("id", hasItem(id));
+                .body("id", is(id));
     }
 
 
@@ -240,11 +240,11 @@ public class CategoryRestIT extends CategoryRestTestBase {
                 .extract().asString();
     }
 
-    public void updateCategory(Object dto, String id, String path) {
+    private void updateCategory(Object dto, String id, String path) {
         given().contentType(ContentType.JSON)
                 .pathParam("id", id)
                 .body(dto)
-                .put(path + "/id/{id}")
+                .put(path + "/{id}")
                 .then()
                 .statusCode(204);
     }
@@ -252,7 +252,7 @@ public class CategoryRestIT extends CategoryRestTestBase {
     private void deleteCategory(String id, String path) {
         given().contentType(ContentType.JSON)
                 .pathParam("id", id)
-                .delete(path + "/id/{id}")
+                .delete(path + "/{id}")
                 .then()
                 .statusCode(204);
     }

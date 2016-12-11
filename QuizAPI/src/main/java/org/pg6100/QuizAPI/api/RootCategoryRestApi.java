@@ -42,7 +42,7 @@ public interface RootCategoryRestApi {
 
     @ApiOperation("Update category by id")
     @PUT
-    @Path("/id/{id}")
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     void updateRootCategory(
             @ApiParam(ID_PARAM)
@@ -59,7 +59,7 @@ public interface RootCategoryRestApi {
 
     @ApiOperation("Delete a category with given id (name)")
     @DELETE
-    @Path("/id/{id}")
+    @Path("/{id}")
     void deleteRootCategory(
             @ApiParam(ID_PARAM)
             @PathParam("id")

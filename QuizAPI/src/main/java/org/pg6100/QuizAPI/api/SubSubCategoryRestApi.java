@@ -58,7 +58,7 @@ public interface SubSubCategoryRestApi {
 
     @ApiOperation("Delete a subsub category with given id")
     @DELETE
-    @Path("/id/{id}")
+    @Path("/{id}")
     void deleteSubSubCategory(
             @ApiParam(ID_PARAM)
             @PathParam("id")

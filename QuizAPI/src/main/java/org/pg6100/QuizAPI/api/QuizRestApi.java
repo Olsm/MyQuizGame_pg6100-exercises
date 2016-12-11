@@ -91,7 +91,7 @@ public interface QuizRestApi {
 
     @ApiOperation("Update an existing quiz")
     @PUT
-    @Path("/id/{id}")
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     void update(
             @ApiParam(ID_PARAM)
@@ -113,7 +113,7 @@ public interface QuizRestApi {
 
     @ApiOperation("Update the question of an existing quiz")
     @PUT
-    @Path("/id/{id}/question")
+    @Path("/{id}/question")
     @Consumes(MediaType.TEXT_PLAIN)
     void updateQuestion(
             @ApiParam(ID_PARAM)
@@ -127,7 +127,7 @@ public interface QuizRestApi {
 
     @ApiOperation("Delete a quiz with the given id")
     @DELETE
-    @Path("/id/{id}")
+    @Path("/{id}")
     void delete(
             @ApiParam(ID_PARAM)
             @PathParam("id")
