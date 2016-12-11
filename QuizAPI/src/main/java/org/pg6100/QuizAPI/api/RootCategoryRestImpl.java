@@ -36,19 +36,19 @@ public class RootCategoryRestImpl implements RootCategoryRestApi {
     }
 
     @Override
-    public RootCategoryDTO getRootCategoryById(String name) {
-        requireRootCategory(name);
-        return CategoryConverter.transform(cEJB.getRootCategory(name));
+    public RootCategoryDTO getRootCategoryById(Long id) {
+        requireRootCategory(id);
+        return CategoryConverter.transform(cEJB.getRootCategory(id));
     }
 
     @Override
-    public Set<SubCategoryDTO> getSubCategoriesByRootCategory(String name) {
-        requireRootCategory(name);
-        return CategoryConverter.transformSubCategories(cEJB.getRootCategory(name).getSubCategoryList());
+    public Set<SubCategoryDTO> getSubCategoriesByRootCategory(Long id) {
+        requireRootCategory(id);
+        return CategoryConverter.transformSubCategories(cEJB.getRootCategory(id).getSubCategoryList());
     }
 
     @Override
-    public String createRootCategory(RootCategoryDTO dto) {
+    public Long createRootCategory(RootCategoryDTO dto) {
         if (dto.name == null)
             throw new WebApplicationException("Category name must be specified when creating root category");
 
@@ -59,31 +59,31 @@ public class RootCategoryRestImpl implements RootCategoryRestApi {
             throw wrapException(e);
         }
 
-        return rootCategory.getName();
+        return rootCategory.getId();
     }
 
     @Override
-    public void updateRootCategory(String name, RootCategoryDTO dto) {
-        if (! cEJB.rootCatExists(name))
-            throw new WebApplicationException("Cannot find category with name: " + name, 404);
+    public void updateRootCategory(Long id, RootCategoryDTO dto) {
+        if (! cEJB.rootCatExists(id))
+            throw new WebApplicationException("Cannot find category with id " + id, 404);
 
         try {
-            cEJB.updateRootCategory(name, dto.name);
+            cEJB.updateRootCategory(id, dto.name);
         } catch (Exception e) {
             throw wrapException(e);
         }
     }
 
     @Override
-    public void deleteRootCategory(String name) {
-        cEJB.deleteRootCategory(name);
+    public void deleteRootCategory(Long id) {
+        cEJB.deleteRootCategory(id);
     }
 
     //----------------------------------------------------------
 
-    private void requireRootCategory(String name) throws WebApplicationException {
-        if (!cEJB.rootCatExists(name)) {
-            throw new WebApplicationException("Cannot find root category: " + name, 404);
+    private void requireRootCategory(Long id) throws WebApplicationException {
+        if (!cEJB.rootCatExists(id)) {
+            throw new WebApplicationException("Cannot find root category with id " + id, 404);
         }
     }
 
@@ -107,10 +107,10 @@ public class RootCategoryRestImpl implements RootCategoryRestApi {
     /* Deprecated methods */
 
     @Override
-    public Response deprecatedGetRootCategoryById(String name) {
+    public Response deprecatedGetRootCategoryById(Long id) {
         return Response.status(301)
                 .location(UriBuilder.fromUri("categories")
-                        .queryParam("id", name).build())
+                        .queryParam("id", id).build())
                 .build();
     }
 
@@ -123,9 +123,9 @@ public class RootCategoryRestImpl implements RootCategoryRestApi {
     }
 
     @Override
-    public Response deprecatedGetSubCategoriesByRootCategory(String name) {
+    public Response deprecatedGetSubCategoriesByRootCategory(Long id) {
         return Response.status(301)
-                .location(UriBuilder.fromUri("categories/" + name + "/subcategories").build())
+                .location(UriBuilder.fromUri("categories/" + id + "/subcategories").build())
                 .build();
     }
 }

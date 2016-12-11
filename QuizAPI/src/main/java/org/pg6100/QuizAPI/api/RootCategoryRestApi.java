@@ -24,30 +24,30 @@ public interface RootCategoryRestApi {
                     boolean withQuizes
     );
 
-    @ApiOperation("Get category by id (name)")
+    @ApiOperation("Get category by id)")
     @GET
     @Path("/{id}")
     RootCategoryDTO getRootCategoryById(
             @ApiParam(ID_PARAM)
             @PathParam("id")
-                    String category);
+                    Long id);
 
     @ApiOperation("Create a category")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiResponse(code = 200, message = "The id of the new category")
-    String createRootCategory(
+    Long createRootCategory(
             @ApiParam("Category name")
                     RootCategoryDTO dto);
 
-    @ApiOperation("Update category by id (name)")
+    @ApiOperation("Update category by id")
     @PUT
     @Path("/id/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     void updateRootCategory(
             @ApiParam(ID_PARAM)
             @PathParam("id")
-                    String name,
+                    Long id,
             @ApiParam("The category that will replace the old one")
                     RootCategoryDTO dto);
 
@@ -63,20 +63,20 @@ public interface RootCategoryRestApi {
     void deleteRootCategory(
             @ApiParam(ID_PARAM)
             @PathParam("id")
-                    String name);
+                    Long id);
 
-    @ApiOperation("GET all subcategories of the category specified by id (name)")
+    @ApiOperation("GET all subcategories of the category specified by id")
     @GET
     @Path("/{id}/subcategories")
     Set<SubCategoryDTO> getSubCategoriesByRootCategory(
-            @ApiParam("The root category name")
+            @ApiParam("The root category id")
             @PathParam("id")
-                    String name);
+                    Long id);
 
 
     /* Deprecated methods */
 
-    @ApiOperation("Get category by id (name)")
+    @ApiOperation("Get category by id")
     @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
     @GET
     @Path("/id/{id}")
@@ -84,7 +84,7 @@ public interface RootCategoryRestApi {
     Response deprecatedGetRootCategoryById(
             @ApiParam(ID_PARAM)
             @PathParam("id")
-                    String category);
+                    Long id);
 
     @ApiOperation("all categories that have at least one subcategory with at least one subsubcategory with at least one quiz.")
     @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
@@ -93,13 +93,13 @@ public interface RootCategoryRestApi {
     @Deprecated
     Response deprecatedGetWithQuizes();
 
-    @ApiOperation("GET all subcategories of the category specified by id (name)")
+    @ApiOperation("GET all subcategories of the category specified by id")
     @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
     @GET
     @Path("/id/{id}/subcategories")
     @Deprecated
     Response deprecatedGetSubCategoriesByRootCategory(
-            @ApiParam("The root category name")
+            @ApiParam("The root category id")
             @PathParam("id")
-                    String name);
+                    Long id);
 }

@@ -67,9 +67,9 @@ public interface QuizRestApi {
     @GET
     @Path("/categories/{id}")
     List<QuizDTO> getByCategory(
-            @ApiParam("The category name")
+            @ApiParam("The category id")
             @PathParam("id")
-                    String id);
+                    Long id);
 
     @ApiOperation("Create a quiz")
     @POST

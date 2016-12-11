@@ -95,7 +95,7 @@ public class Quiz {
     }
 
     public void setCorrectAnswer(int correctAnswer) {
-        this.correctAnswer = correctAnswer;
+        this.correctAnswer = --correctAnswer;
     }
 
     @Override

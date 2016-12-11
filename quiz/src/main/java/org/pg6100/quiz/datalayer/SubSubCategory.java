@@ -7,7 +7,9 @@ import java.util.Set;
 @Entity
 public class SubSubCategory {
 
-    @Id
+    @Id @GeneratedValue
+    private Long id;
+    @Column(unique = true)
     private String name;
     @ManyToOne
     SubCategory subCategory;
@@ -20,6 +22,10 @@ public class SubSubCategory {
         this.subCategory = subCategory;
         this.name = name;
         this.quizList = new HashSet<>();
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

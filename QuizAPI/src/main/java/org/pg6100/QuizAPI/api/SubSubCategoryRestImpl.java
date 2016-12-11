@@ -35,62 +35,72 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
     }
 
     @Override
-    public SubSubCategoryDTO getSubSubCategoryById(String name) {
-        requireSubSubCategory(name);
-        return CategoryConverter.transform(cEJB.getSubSubCategory(name));
+    public SubSubCategoryDTO getSubSubCategoryById(Long id) {
+        requireSubSubCategory(id);
+        return CategoryConverter.transform(cEJB.getSubSubCategory(id));
     }
 
     @Override
-    public String createSubSubCategory(SubSubCategoryDTO dto) {
-        if (dto.subCategoryName == null)
+    public Long createSubSubCategory(SubSubCategoryDTO dto) {
+        if (dto.subCategoryId == null)
             throw new WebApplicationException("Sub category must be specified when creating subsub category");
         else if (dto.name == null)
             throw new WebApplicationException("Category name must be specified when creating subsub category");
 
         SubSubCategory subSubCategory;
         try {
-            subSubCategory = cEJB.registerSubSubCategory(cEJB.getSubCategory(dto.subCategoryName), dto.name);
+            long subCategoryId = parseId(dto.subCategoryId);
+            subSubCategory = cEJB.registerSubSubCategory(cEJB.getSubCategory(subCategoryId), dto.name);
         } catch (Exception e) {
             throw wrapException(e);
         }
 
-        return subSubCategory.getName();
+        return subSubCategory.getId();
     }
 
     @Override
-    public void updateSubSubCategory(String name, SubSubCategoryDTO dto) {
-        requireSubCategory(dto.subCategoryName);
-        requireSubSubCategory(name);
+    public void updateSubSubCategory(Long id, SubSubCategoryDTO dto) {
+        long subCategoryId = parseId(dto.subCategoryId);
+        requireSubCategory(subCategoryId);
+        requireSubSubCategory(id);
 
         try {
-            cEJB.updateSubSubCategory(name, dto.name, dto.subCategoryName);
+            cEJB.updateSubSubCategory(id, dto.name, subCategoryId);
         } catch (Exception e) {
             throw wrapException(e);
         }
     }
 
     @Override
-    public void deleteSubSubCategory(String name) {
-        cEJB.deleteSubSubCategory(name);
+    public void deleteSubSubCategory(Long id) {
+        cEJB.deleteSubSubCategory(id);
     }
 
     @Override
-    public Set<SubSubCategoryDTO> getSubSubBySubCategory(String name) {
-        requireSubCategory(name);
-        return CategoryConverter.transformSubSubCategories(cEJB.getSubCategory(name).getSubSubCategoryList());
+    public Set<SubSubCategoryDTO> getSubSubBySubCategory(Long id) {
+        requireSubCategory(id);
+        return CategoryConverter.transformSubSubCategories(cEJB.getSubCategory(id).getSubSubCategoryList());
     }
 
     //----------------------------------------------------------
 
-    private void requireSubCategory(String name) throws WebApplicationException {
-        if (!cEJB.subCatExists(name)) {
-            throw new WebApplicationException("Cannot find sub category: " + name, 404);
+    private void requireSubCategory(Long id) throws WebApplicationException {
+        if (!cEJB.subCatExists(id)) {
+            throw new WebApplicationException("Cannot find sub category with id " + id, 404);
         }
     }
 
-    private void requireSubSubCategory(String name) throws WebApplicationException {
-        if (!cEJB.subCatExists(name)) {
-            throw new WebApplicationException("Cannot find sub category: " + name, 404);
+    private void requireSubSubCategory(Long id) throws WebApplicationException {
+        if (!cEJB.subCatExists(id)) {
+            throw new WebApplicationException("Cannot find sub category with id " + id, 404);
+        }
+    }
+
+    private long parseId(String id) {
+        try{
+            return Long.parseLong(id);
+        } catch (Exception e){
+            throw new WebApplicationException("Invalid id: " + id, 400);
         }
     }
 
@@ -114,29 +124,29 @@ public class SubSubCategoryRestImpl implements SubSubCategoryRestApi {
     /* Deprecated methods */
 
     @Override
-    public Response deprecatedGetSubSubCategoryById(String name) {
+    public Response deprecatedGetSubSubCategoryById(Long id) {
         return Response.status(301)
                 .location(UriBuilder.fromUri("subsubcategories")
-                        .queryParam("id", name).build())
+                        .queryParam("id", id).build())
                 .build();
     }
 
     @Override
-    public Response deprecatedGetSubSubBySubCategory(String name) {
+    public Response deprecatedGetSubSubBySubCategory(Long id) {
         return Response.status(301)
                 .location(UriBuilder.fromUri("subcategories")
-                        .queryParam("id", name)
+                        .queryParam("id", id)
                         .uri("subsubcategories").build())
                 .build();
     }
 
     @Override
-    public Response deprecatedGetSubSubWithGivenSubParentByCategory(String name) {
-        if (!cEJB.subSubCatExists(name))
-            throw new WebApplicationException("Cannot find category with name: " + name, 404);
+    public Response deprecatedGetSubSubWithGivenSubParentByCategory(Long id) {
+        if (!cEJB.subSubCatExists(id))
+            throw new WebApplicationException("Cannot find category with id " + id, 404);
         return Response.status(301)
                 .location(UriBuilder.fromUri("subcategories")
-                        .queryParam("id", name).uri("subsubcategories").build())
+                        .queryParam("id", id).uri("subsubcategories").build())
                 .build();
     }
 

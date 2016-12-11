@@ -29,7 +29,7 @@ public class CategoryEJB {
     }
 
     public SubCategory registerSubCategory(RootCategory rootCategory, String name) {
-        rootCategory = getRootCategory(rootCategory.getName());
+        rootCategory = getRootCategory(rootCategory.getId());
         SubCategory subCategory = new SubCategory(rootCategory, name);
         em.persist(subCategory);
         rootCategory.addSubCategory(subCategory);
@@ -37,37 +37,37 @@ public class CategoryEJB {
     }
 
     public SubSubCategory registerSubSubCategory(SubCategory subCategory, String name) {
-        subCategory = getSubCategory(subCategory.getName());
+        subCategory = getSubCategory(subCategory.getId());
         SubSubCategory subSubCategory = new SubSubCategory(subCategory, name);
         em.persist(subSubCategory);
         subCategory.addSubSubCategory(subSubCategory);
         return subSubCategory;
     }
 
-    public RootCategory getRootCategory(String name) {
-        return em.find(RootCategory.class, name);
+    public RootCategory getRootCategory(Long id) {
+        return em.find(RootCategory.class, id);
     }
 
-    public SubCategory getSubCategory(String name) {
-        return em.find(SubCategory.class, name);
+    public SubCategory getSubCategory(Long id) {
+        return em.find(SubCategory.class, id);
     }
-    public SubSubCategory getSubSubCategory(String name) {
-        return em.find(SubSubCategory.class, name);
-    }
-
-    public boolean rootCatExists(String name) {
-        return getRootCategory(name) != null;
-    }
-    public boolean subCatExists(String name) {
-        return getSubCategory(name) != null;
-    }
-    public boolean subSubCatExists(String name) {
-        return getSubSubCategory(name) != null;
+    public SubSubCategory getSubSubCategory(Long id) {
+        return em.find(SubSubCategory.class, id);
     }
 
+    public boolean rootCatExists(Long id) {
+        return getRootCategory(id) != null;
+    }
+    public boolean subCatExists(Long id) {
+        return getSubCategory(id) != null;
+    }
+    public boolean subSubCatExists(Long id) {
+        return getSubSubCategory(id) != null;
+    }
 
-    public boolean updateRootCategory(@NotNull String name, @NotNull String newCategory) {
-            RootCategory rootCategory = getRootCategory(name);
+
+    public boolean updateRootCategory(@NotNull Long id, @NotNull String newCategory) {
+            RootCategory rootCategory = getRootCategory(id);
             if (rootCategory == null) {
                 return false;
             }
@@ -75,9 +75,9 @@ public class CategoryEJB {
             return true;
     }
 
-    public boolean updateSubCategory(@NotNull String name, @NotNull String newCategory, @NotNull String rootCategory) {
-        RootCategory rootCat = getRootCategory(rootCategory);
-        SubCategory subCat = getSubCategory(name);
+    public boolean updateSubCategory(@NotNull Long id, @NotNull String newCategory, @NotNull Long rootCategoryId) {
+        RootCategory rootCat = getRootCategory(rootCategoryId);
+        SubCategory subCat = getSubCategory(id);
         if (rootCat == null || subCat == null) {
             return false;
         }
@@ -86,9 +86,9 @@ public class CategoryEJB {
         return true;
     }
 
-    public boolean updateSubSubCategory(@NotNull String name, @NotNull String newCategory, @NotNull String subCategory) {
-        SubCategory subCat = getSubCategory(subCategory);
-        SubSubCategory subSubCat = getSubSubCategory(name);
+    public boolean updateSubSubCategory(@NotNull Long id, @NotNull String newCategory, @NotNull Long subCategoryId) {
+        SubCategory subCat = getSubCategory(subCategoryId);
+        SubSubCategory subSubCat = getSubSubCategory(id);
         if (subCat == null || subSubCat == null) {
             return false;
         }
@@ -97,20 +97,20 @@ public class CategoryEJB {
         return true;
     }
 
-    public void deleteRootCategory(@NotNull String name) {
-        em.remove(getRootCategory(name));
+    public void deleteRootCategory(@NotNull Long id) {
+        em.remove(getRootCategory(id));
     }
 
-    public void deleteSubCategory(@NotNull String name) {
-        SubCategory subCategory = getSubCategory(name);
-        getRootCategory(subCategory.getRootCategory().getName()).removeSubCategory(subCategory);
-        em.remove(getSubCategory(name));
+    public void deleteSubCategory(@NotNull Long id) {
+        SubCategory subCategory = getSubCategory(id);
+        getRootCategory(subCategory.getRootCategory().getId()).removeSubCategory(subCategory);
+        em.remove(subCategory);
     }
 
-    public void deleteSubSubCategory(@NotNull String name) {
-        SubSubCategory subSubCategory = getSubSubCategory(name);
-        getSubCategory(subSubCategory.getSubCategory().getName()).removeSubSubCategory(subSubCategory);
-        em.remove(getSubSubCategory(name));
+    public void deleteSubSubCategory(@NotNull Long id) {
+        SubSubCategory subSubCategory = getSubSubCategory(id);
+        getSubCategory(subSubCategory.getSubCategory().getId()).removeSubSubCategory(subSubCategory);
+        em.remove(subSubCategory);
     }
 
     public Set<RootCategory> getAllRootCategories() {

@@ -26,18 +26,18 @@ import static org.hamcrest.core.Is.is;
  */
 public class QuizRestIT extends QuizRestTestBase {
 
-    private RootCategoryDTO rootCategory;
-    private SubCategoryDTO subCategory;
     private SubSubCategoryDTO category;
+    private SubSubCategoryDTO category2;
+    private SubSubCategoryDTO category3;
 
     @Before
     public void setup() {
-        rootCategory = new RootCategoryDTO("rootCategory");
-        subCategory = new SubCategoryDTO(rootCategory.name, "subCategory");
-        category = new SubSubCategoryDTO(subCategory.name, "category");
-        registerCategory(rootCategory, "/categories");
-        registerCategory(subCategory, "/subcategories");
-        registerCategory(category, "/subsubcategories");
+        RootCategoryDTO rootCategory = new RootCategoryDTO("rootCategory");
+        rootCategory.id = registerCategory(rootCategory, "/categories");
+        SubCategoryDTO subCategory = new SubCategoryDTO(rootCategory.id, "subCategory");
+        subCategory.id = registerCategory(subCategory, "/subcategories");
+        category = new SubSubCategoryDTO(subCategory.id, "category");
+        category.id = registerCategory(category, "/subsubcategories");
     }
 
     @Test
@@ -57,12 +57,12 @@ public class QuizRestIT extends QuizRestTestBase {
         testGet().body("size()", is(0));
 
         QuizDTO dto = createQuizDTO(null, category, question, answerList, correctAnswer);
-        String id = testRegisterQuiz(dto).extract().asString();
+        String id = testRegisterQuiz(dto);
         testGet().body("size()", is(1));
         testGet("/id/{id}", id)
                 .body("id", hasItem(id))
                 .body("category.name", hasItem(category.name))
-                .body("category.subCategoryName", hasItem(category.subCategoryName))
+                .body("category.subCategoryId", hasItem(category.subCategoryId))
                 .body("question", hasItem(question))
                 .body("answerList", hasItem(answerList))
                 .body("correctAnswer", hasItem(correctAnswer));
@@ -70,7 +70,7 @@ public class QuizRestIT extends QuizRestTestBase {
 
     @Test
     public void testDelete() {
-        String id = testRegisterQuiz(createQuizDTO()).extract().asString();
+        String id = testRegisterQuiz(createQuizDTO());
         testGet().body("id", is(Collections.singletonList(id)));
 
         delete("/quiz/id/" + id);
@@ -81,7 +81,7 @@ public class QuizRestIT extends QuizRestTestBase {
     @Test
     public void testUpdate() throws Exception {
         QuizDTO quizDTO = createQuizDTO();
-        String id = testRegisterQuiz(quizDTO).extract().asString();
+        String id = testRegisterQuiz(quizDTO);
         testGet().body("question", contains(quizDTO.question));
 
         String updatedQuestion = "new question";
@@ -124,20 +124,20 @@ public class QuizRestIT extends QuizRestTestBase {
     @Test
     public void testInvalidUpdate() {
         QuizDTO dto = createQuizDTO();
-        dto.id = testRegisterQuiz(dto).extract().asString();
+        dto.id = testRegisterQuiz(dto);
         QuizDTO quizDTO = createQuizDTO(dto.id, null, "", null, null);
         testUpdateQuiz(quizDTO, dto.id, 400);
     }
 
     private void createSomeQuizes() {
         RootCategoryDTO rootCategory2 = new RootCategoryDTO("root2");
-        SubCategoryDTO subCategory2 = new SubCategoryDTO(rootCategory2.name, "sub2");
-        SubSubCategoryDTO category2 = new SubSubCategoryDTO(subCategory2.name, "subsub2");
-        SubSubCategoryDTO category3 = new SubSubCategoryDTO(subCategory2.name, "subsub3");
-        registerCategory(rootCategory2, "/categories");
-        registerCategory(subCategory2, "/subcategories");
-        registerCategory(category2, "/subsubcategories");
-        registerCategory(category3, "/subsubcategories");
+        rootCategory2.id = registerCategory(rootCategory2, "/categories");
+        SubCategoryDTO subCategory2 = new SubCategoryDTO(rootCategory2.id, "sub2");
+        subCategory2.id = registerCategory(subCategory2, "/subcategories");
+        category2 = new SubSubCategoryDTO(subCategory2.id, "subsub2");
+        category2.id = registerCategory(category2, "/subsubcategories");
+        category3 = new SubSubCategoryDTO(subCategory2.id, "subsub3");
+        category3.id = registerCategory(category3, "/subsubcategories");
         List<String> answerList = new ArrayList<>();
         answerList.add("ans1");
         answerList.add("ans2");
@@ -175,14 +175,14 @@ public class QuizRestIT extends QuizRestTestBase {
     @Test
     public void testGetAllByCategory() {
         createSomeQuizes();
-        testGet("/categories/{id}", category.name).body("size()", is(4));
-        testGet("/categories/{id}", "subsub2").body("size()", is(2));
-        testGet("/categories/{id}", "subsub3").body("size()", is(0));
+        testGet("/categories/{id}", category.id).body("size()", is(4));
+        testGet("/categories/{id}", category2.id).body("size()", is(2));
+        testGet("/categories/{id}", category3.id).body("size()", is(0));
     }
 
     @Test
     public void testInvalidGetByCategory() {
-        testGet("/categories/{id}", "foo", 400);
+        testGet("/categories/{id}", "foo", 404);
     }
 
     @Test
@@ -231,12 +231,13 @@ public class QuizRestIT extends QuizRestTestBase {
         testGet("/{id}", "foo", 404);
     }
 
-    private void registerCategory(Object dto, String path) {
-        given().contentType(ContentType.JSON)
+    private String registerCategory(Object dto, String path) {
+        return given().contentType(ContentType.JSON)
                 .body(dto)
                 .post(path)
                 .then()
-                .statusCode(200);
+                .statusCode(200)
+                .extract().asString();
     }
 
     private ValidatableResponse testGet() {
@@ -258,16 +259,17 @@ public class QuizRestIT extends QuizRestTestBase {
                 .statusCode(statusCode);
     }
 
-    private ValidatableResponse testRegisterQuiz(Object dto) {
+    private String testRegisterQuiz(Object dto) {
         return  testRegisterQuiz(dto, 200);
     }
 
-    private ValidatableResponse testRegisterQuiz(Object dto, int statusCode) {
+    private String testRegisterQuiz(Object dto, int statusCode) {
         return given().contentType(ContentType.JSON)
                 .body(dto)
                 .post("/quiz")
                 .then()
-                .statusCode(statusCode);
+                .statusCode(statusCode)
+                .extract().asString();
     }
 
     private ValidatableResponse testUpdateQuiz(Object dto, String id) {

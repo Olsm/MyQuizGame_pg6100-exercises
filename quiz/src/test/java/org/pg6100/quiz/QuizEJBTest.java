@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 @RunWith(Arquillian.class)
@@ -70,19 +71,23 @@ public class QuizEJBTest {
     @After
     public void tearDown() {
         deleterEJB.deleteEntities(Quiz.class);
-        deleterEJB.deleteEntities(SubSubCategory.class);
-        deleterEJB.deleteEntities(SubCategory.class);
+        for (SubSubCategory cat : categoryEJB.getAllSubSubCategories()) {
+            categoryEJB.deleteSubSubCategory(cat.getId());
+        }
+        for (SubCategory cat : categoryEJB.getAllSubCategories()) {
+            categoryEJB.deleteSubCategory(cat.getId());
+        }
         deleterEJB.deleteEntities(RootCategory.class);
     }
 
     @Test
     public void testGetRootCategory() {
-        assertEquals(rootCategory, quiz.getRootCategory());
+        assertEquals(rootCategory.getId(), quiz.getRootCategory().getId());
     }
 
     @Test
     public void testGetSubCategory() {
-        assertEquals(subCategory, quiz.getSubCategory());
+        assertEquals(subCategory.getId(), quiz.getSubCategory().getId());
     }
 
     @Test
@@ -97,7 +102,7 @@ public class QuizEJBTest {
 
     @Test
     public void testGetCorrectAnswer() {
-        assertEquals(answerList.get(correctAnswer - 1), quiz.getCorrectAnswer());
+        assertEquals(answerList.get(correctAnswer), quiz.getCorrectAnswer());
     }
 
     @Test
@@ -136,7 +141,7 @@ public class QuizEJBTest {
     public void testUpdateQuizCategory() {
         SubSubCategory category = categoryEJB.registerSubSubCategory(subCategory, "subsubcat");
         quizEJB.updateQuizCategory(quiz.getId(), category);
-        assertEquals(category.getName(), quizEJB.getQuiz(quiz.getId()).getSubSubCategory().getName());
+        assertEquals(category.getId(), quizEJB.getQuiz(quiz.getId()).getSubSubCategory().getId());
     }
 
     @Test
@@ -162,10 +167,10 @@ public class QuizEJBTest {
         assertEquals("answer2", quizEJB.getQuiz(quiz.getId()).getCorrectAnswer());
     }
 
-    @Test(expected = EJBException.class)
+    @Test
     public void testDeleteQuiz() {
         quizEJB.deleteQuiz(quiz.getId());
-        assertNull(quizEJB.getQuiz(quiz.getId()));
+        assertFalse(quizEJB.isPresent(quiz.getId()));
     }
 
 }

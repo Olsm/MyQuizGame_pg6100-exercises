@@ -37,7 +37,7 @@ public class QuizRestImpl implements QuizRestApi {
     }
 
     @Override
-    public List<QuizDTO> getByCategory(String id) {
+    public List<QuizDTO> getByCategory(Long id) {
         if (! CEJB.subSubCatExists(id))
             throw new WebApplicationException("Cannot find category with name: " + id, 400);
         return QuizConverter.transform(QEJB.getAllFromCategory(CEJB.getSubSubCategory(id)));
@@ -45,22 +45,17 @@ public class QuizRestImpl implements QuizRestApi {
 
     @Override
     public Long createQuiz(QuizDTO dto) {
-
-        /*
-            Error code 400:
-            the user had done something wrong, eg sent invalid input configurations
-         */
-
         if(dto.id != null){
             throw new WebApplicationException("Cannot specify id for a newly generated quiz", 400);
         }
-        if (!CEJB.subSubCatExists(dto.category.name)) {
+        long categoryId = parseId(dto.category.id);
+        if (!CEJB.subSubCatExists(categoryId)) {
             throw new WebApplicationException("sub sub category is invalid", 400);
         }
 
         Quiz quiz;
         try{
-            SubSubCategory subCat = CEJB.getSubSubCategory(dto.category.name);
+            SubSubCategory subCat = CEJB.getSubSubCategory(categoryId);
             quiz = QEJB.registerQuiz(subCat, dto.question, dto.answerList, dto.answerList.indexOf(dto.correctAnswer));
         }catch (Exception e){
             /*
@@ -126,6 +121,14 @@ public class QuizRestImpl implements QuizRestApi {
     private void requireQuiz(Long id) throws WebApplicationException {
         if (!QEJB.isPresent(id)) {
             throw new WebApplicationException("Cannot find quiz with id: " + id, 404);
+        }
+    }
+
+    private long parseId(String id) {
+        try{
+            return Long.parseLong(id);
+        } catch (Exception e){
+            throw new WebApplicationException("Invalid id: " + id, 400);
         }
     }
 

@@ -24,7 +24,7 @@ public class QuizConverter {
         Objects.requireNonNull(entity);
         QuizDTO dto = new QuizDTO();
         dto.id = String.valueOf(entity.getId());
-        dto.category = new SubSubCategoryDTO(entity.getSubCategory().getName(), entity.getSubSubCategory().getName());
+        dto.category = new SubSubCategoryDTO(entity.getSubCategory().getId().toString(), entity.getSubSubCategory().getName());
         dto.question = entity.getQuestion();
         dto.answerList = entity.getAnswers();
         dto.correctAnswer = entity.getCorrectAnswer();

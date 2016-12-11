@@ -18,7 +18,7 @@ import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.Is.is;
 
-class QuizRestTestBase {
+public class QuizRestTestBase {
 
     @BeforeClass
     public static void initClass() {
@@ -51,7 +51,7 @@ class QuizRestTestBase {
                 .extract().as(SubSubCategoryDTO[].class));
 
         list2.forEach(dto ->
-                given().pathParam("id", dto.name).delete("/subsubcategories/id/{id}").then().statusCode(204));
+                given().pathParam("id", dto.id).delete("/subsubcategories/id/{id}").then().statusCode(204));
 
         get("/subsubcategories").then().statusCode(200).body("size()", is(0));
 
@@ -61,7 +61,7 @@ class QuizRestTestBase {
                 .extract().as(SubCategoryDTO[].class));
 
         list3.forEach(dto ->
-                given().pathParam("id", dto.name).delete("/subcategories/id/{id}").then().statusCode(204));
+                given().pathParam("id", dto.id).delete("/subcategories/id/{id}").then().statusCode(204));
 
         get("/subcategories").then().statusCode(200).body("size()", is(0));
 
@@ -71,7 +71,7 @@ class QuizRestTestBase {
                 .extract().as(RootCategoryDTO[].class));
 
         list4.forEach(dto ->
-                given().pathParam("id", dto.name).delete("/categories/id/{id}").then().statusCode(204));
+                given().pathParam("id", dto.id).delete("/categories/id/{id}").then().statusCode(204));
 
         get("/categories").then().statusCode(200).body("size()", is(0));
     }

@@ -14,15 +14,15 @@ public class CategoryConverter {
 
     public static RootCategoryDTO transform(RootCategory category) {
         Objects.requireNonNull(category);
-        return new RootCategoryDTO(category.getName());
+        return new RootCategoryDTO(category.getId().toString(), category.getName());
     }
 
     public static SubCategoryDTO transform(SubCategory category) {
-        return new SubCategoryDTO(category.getRootCategory().getName(), category.getName());
+        return new SubCategoryDTO(category.getRootCategory().getId().toString(), category.getId().toString(), category.getName());
     }
 
     public static SubSubCategoryDTO transform(SubSubCategory category) {
-        return new SubSubCategoryDTO(category.getSubCategory().getName(), category.getName());
+        return new SubSubCategoryDTO(category.getSubCategory().getId().toString(), category.getId().toString(), category.getName());
     }
 
     public static Set<RootCategoryDTO> transformCategories(Set<RootCategory> categories) {

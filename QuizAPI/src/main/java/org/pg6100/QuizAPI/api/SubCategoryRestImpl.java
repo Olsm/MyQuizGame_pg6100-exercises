@@ -32,56 +32,66 @@ public class SubCategoryRestImpl implements SubCategoryRestApi {
     }
 
     @Override
-    public SubCategoryDTO getSubCategoryById(String name) {
-        requireSubCategory(name);
-        return CategoryConverter.transform(cEJB.getSubCategory(name));
+    public SubCategoryDTO getSubCategoryById(Long id) {
+        requireSubCategory(id);
+        return CategoryConverter.transform(cEJB.getSubCategory(id));
     }
 
     @Override
-    public String createSubCategory(SubCategoryDTO dto) {
-        if (dto.rootCategoryName == null)
+    public Long createSubCategory(SubCategoryDTO dto) {
+        if (dto.rootCategoryId == null)
             throw new WebApplicationException("Root category must be specified when creating sub category");
         else if (dto.name == null)
             throw new WebApplicationException("Category name must be specified when creating sub category");
 
         SubCategory subCategory;
         try {
-            subCategory = cEJB.registerSubCategory(cEJB.getRootCategory(dto.rootCategoryName), dto.name);
+            long rootCatId = parseId(dto.rootCategoryId);
+            subCategory = cEJB.registerSubCategory(cEJB.getRootCategory(rootCatId), dto.name);
         } catch (Exception e) {
             throw wrapException(e);
         }
 
-        return subCategory.getName();
+        return subCategory.getId();
     }
 
     @Override
-    public void updateSubCategory(String name, SubCategoryDTO dto) {
-        requireRootCategory(dto.rootCategoryName);
-        requireSubCategory(name);
+    public void updateSubCategory(Long id, SubCategoryDTO dto) {
+        long rootCatId = parseId(dto.rootCategoryId);
+        requireRootCategory(rootCatId);
+        requireSubCategory(id);
 
         try {
-            cEJB.updateSubCategory(name, dto.name, dto.rootCategoryName);
+            cEJB.updateSubCategory(id, dto.name, rootCatId);
         } catch (Exception e) {
             throw wrapException(e);
         }
     }
 
     @Override
-    public void deleteSubCategory(String name) {
-        cEJB.deleteSubCategory(name);
+    public void deleteSubCategory(Long id) {
+        cEJB.deleteSubCategory(id);
     }
 
     //----------------------------------------------------------
 
-    private void requireRootCategory(String name) throws WebApplicationException {
-        if (!cEJB.rootCatExists(name)) {
-            throw new WebApplicationException("Cannot find root category: " + name, 404);
+    private void requireRootCategory(Long id) throws WebApplicationException {
+        if (!cEJB.rootCatExists(id)) {
+            throw new WebApplicationException("Cannot find root category with id " + id, 404);
         }
     }
 
-    private void requireSubCategory(String name) throws WebApplicationException {
-        if (!cEJB.subCatExists(name)) {
-            throw new WebApplicationException("Cannot find sub category: " + name, 404);
+    private void requireSubCategory(Long id) throws WebApplicationException {
+        if (!cEJB.subCatExists(id)) {
+            throw new WebApplicationException("Cannot find sub category with id " + id, 404);
+        }
+    }
+
+    private long parseId(String id) {
+        try{
+            return Long.parseLong(id);
+        } catch (Exception e){
+            throw new WebApplicationException("Invalid id: " + id, 400);
         }
     }
 
@@ -105,18 +115,18 @@ public class SubCategoryRestImpl implements SubCategoryRestApi {
     /* Deprecated methods */
 
     @Override
-    public Response deprecatedGetSubCategoryById(String name) {
+    public Response deprecatedGetSubCategoryById(Long id) {
         return Response.status(301)
                 .location(UriBuilder.fromUri("subcategories")
-                        .queryParam("id", name).build())
+                        .queryParam("id", id).build())
                 .build();
     }
 
     @Override
-    public Response deprecatedGetSubWithGivenParentByCategory(String name) {
+    public Response deprecatedGetSubWithGivenParentByCategory(Long id) {
         return Response.status(301)
                 .location(UriBuilder.fromUri("categories")
-                        .queryParam("id", name).uri("subcategories").build())
+                        .queryParam("id", id).uri("subcategories").build())
                 .build();
     }
 }

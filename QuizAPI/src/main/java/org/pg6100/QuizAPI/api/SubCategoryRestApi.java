@@ -19,30 +19,30 @@ public interface SubCategoryRestApi {
     @GET
     Set<SubCategoryDTO> get();
 
-    @ApiOperation("Get subcategory by id (name)")
+    @ApiOperation("Get subcategory by id")
     @GET
     @Path("/{id}")
     SubCategoryDTO getSubCategoryById(
             @ApiParam(ID_PARAM)
             @PathParam("id")
-                    String name);
+                    Long id);
 
     @ApiOperation("Create a subcategory")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiResponse(code = 200, message = "The id of the new subcategory")
-    String createSubCategory(
-            @ApiParam("Category name and root category")
+    Long createSubCategory(
+            @ApiParam("Category id and root category")
                     SubCategoryDTO dto);
 
-    @ApiOperation("Update sub category by id (name)")
+    @ApiOperation("Update sub category by id")
     @PUT
     @Path("/id/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     void updateSubCategory(
             @ApiParam(ID_PARAM)
             @PathParam("id")
-                    String category,
+                    Long id,
             @ApiParam("The sub category that will replace the old one")
                     SubCategoryDTO dto);
 
@@ -52,18 +52,18 @@ public interface SubCategoryRestApi {
     @Path("/categories/id/{id}");
     */
 
-    @ApiOperation("Delete a sub category with given id (name)")
+    @ApiOperation("Delete a sub category with given id")
     @DELETE
     @Path("/id/{id}")
     void deleteSubCategory(
             @ApiParam(ID_PARAM)
             @PathParam("id")
-                    String category);
+                    Long id);
 
 
     /* Deprecated methods */
 
-    @ApiOperation("Get subcategory by id (name)")
+    @ApiOperation("Get subcategory by id")
     @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
     @GET
     @Path("/id/{id}")
@@ -71,15 +71,15 @@ public interface SubCategoryRestApi {
     Response deprecatedGetSubCategoryById(
             @ApiParam(ID_PARAM)
             @PathParam("id")
-                    String name);
+                    Long id);
 
-    @ApiOperation("GET all subcategories with the given parent specified by id (name)")
+    @ApiOperation("GET all subcategories with the given parent specified by id")
     @ApiResponses({@ApiResponse(code = 301, message = "Deprecated URI. Moved permanently.")})
     @GET
     @Path("/parent/{id}")
     @Deprecated
     Response deprecatedGetSubWithGivenParentByCategory(
-            @ApiParam("The root category name")
+            @ApiParam("The root category id")
             @PathParam("id")
-                    String name);
+                    Long id);
 }
